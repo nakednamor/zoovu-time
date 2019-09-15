@@ -1,4 +1,14 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("Background got a message!")
-    sendResponse({})
-})
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
+    chrome.declarativeContent.onPageChanged.addRules([
+      {
+        conditions: [
+          new chrome.declarativeContent.PageStateMatcher({
+            pageUrl: { urlMatches: ".*" }
+          })
+        ],
+        actions: [new chrome.declarativeContent.ShowPageAction()]
+      }
+    ]);
+  });
+});
