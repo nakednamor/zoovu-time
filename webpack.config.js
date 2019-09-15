@@ -6,23 +6,15 @@ module.exports = {
 
     entry: {
         content: './src/app/content.ts',
-        background: './src/app/background.ts',
-        popup: './src/ui/popup.tsx',
+        background: './src/app/background.ts'
     },
 
     output: {
-        path: path.resolve(__dirname, 'dist/js'),
+        path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
     },
 
     resolve: {
         extensions: [".ts", ".tsx", ".js"]
-    },
-
-    module: {
-        rules: [
-            { test: /\.tsx?$/, loader: "ts-loader" },
-            { test: /\.css$/, use: ['style-loader', 'css-loader'] }
-        ]
-    },
+    }
 };
