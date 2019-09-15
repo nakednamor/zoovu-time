@@ -1,3 +1,11 @@
 .DS_Store
 dist/js/*
 node_modules/
+
+# ignore whole IntelliJ IDEA project configuration…
+/*.iml
+/.idea/*
+
+dist/
+
+yarn.lock
