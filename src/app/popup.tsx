@@ -1,11 +1,24 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 
-interface Props {
-  date: Date;
-}
+const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
+  const [currentTime, setCurrentTime] = useState(new Date(Date.now()));
+  const locale = navigator.language;
+  const dateFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  };
 
-const CurrentDayTracker: React.FunctionComponent<Props> = ({ date }) => {
+  setInterval(() => {
+    setCurrentTime(new Date(Date.now()));
+  }, 1000);
+
   const handlers = useMemo(
     () => ({
       buttonClick: (ev: React.MouseEvent<HTMLButtonElement>) => {
@@ -13,20 +26,17 @@ const CurrentDayTracker: React.FunctionComponent<Props> = ({ date }) => {
         console.log("button clicked" + ev.button);
       }
     }),
-    [date]
+    [currentTime]
   );
 
   return (
     <>
-      <h1>hello</h1>
+      <h1>{currentTime.toLocaleString(locale, dateFormatOptions)}</h1>
       <button onClick={handlers.buttonClick}>aaaa</button>
     </>
   );
 };
 
-ReactDOM.render(
-  <CurrentDayTracker date={new Date()} />,
-  document.getElementById("root")
-);
+ReactDOM.render(<CurrentDayTracker />, document.getElementById("root"));
 
 export default CurrentDayTracker;
