@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react";
-import ReactDOM from "react-dom";
 
-const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
+const Title: React.FunctionComponent<{}> = ({}) => {
   const [currentTime, setCurrentTime] = useState(new Date(Date.now()));
+
   const locale = navigator.language;
+
   const dateFormatOptions = {
     weekday: "long",
     year: "numeric",
@@ -19,24 +20,13 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
     setCurrentTime(new Date(Date.now()));
   }, 1000);
 
-  const handlers = useMemo(
-    () => ({
-      buttonClick: (ev: React.MouseEvent<HTMLButtonElement>) => {
-        // tslint:disable-next-line:no-console
-        console.log("button clicked" + ev.button);
-      }
-    }),
-    [currentTime]
-  );
+  useMemo(() => {}, [currentTime]);
 
   return (
     <>
       <h1>{currentTime.toLocaleString(locale, dateFormatOptions)}</h1>
-      <button onClick={handlers.buttonClick}>aaaa</button>
     </>
   );
 };
 
-ReactDOM.render(<CurrentDayTracker />, document.getElementById("root"));
-
-export default CurrentDayTracker;
+export default Title;
