@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Title from "./title";
 import CurrentDayRecords from "../CurrentDayRecords";
@@ -11,16 +11,12 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
     { s: "12:00", e: "12:00" }
   ]);
 
-  const handlers = useMemo(
-    () => ({
-      onTrackWorkButtonClick: () => {
-        records.push({ e: "20:00", s: "15:30" });
-        // setRecords(records);
-        setWorkTrackStarted(!workTrackStarted);
-      }
-    }),
-    [workTrackStarted]
-  );
+  const handlers = {
+    onTrackWorkButtonClick: () => {
+      records.push({ e: "20:00", s: "15:30" });
+      setWorkTrackStarted(!workTrackStarted);
+    }
+  };
 
   return (
     <>
@@ -34,5 +30,3 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
 };
 
 ReactDOM.render(<CurrentDayTracker />, document.getElementById("root"));
-
-export default CurrentDayTracker;

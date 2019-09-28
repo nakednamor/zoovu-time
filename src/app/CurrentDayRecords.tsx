@@ -6,17 +6,19 @@ interface Props {
 }
 
 const CurrentDayRecords: React.FunctionComponent<Props> = ({ records }) => {
-  const recordList = records.map((r, i) => {
-    return (
-      <>
-        <h3 key={i}>
-          {r.s} - {r.e}
-        </h3>
-      </>
-    );
-  });
-
-  return <>{recordList}</>;
+  return (
+    <>
+      {records.map((r, i) => {
+        return (
+          <>
+            <h3 key={i}>
+              {r.s} - {r.e}
+            </h3>
+          </>
+        );
+      })}
+    </>
+  );
 };
 
 export default CurrentDayRecords;
