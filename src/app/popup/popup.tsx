@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Title from "./title";
-import CurrentDayRecords from "../CurrentDayRecords";
 import { WorkTrackRecord } from "../WorkTrackStorage";
+import CurrentDayRecords from "../../popup/CurrentDayRecords";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const [workTrackStarted, setWorkTrackStarted] = useState(false);
