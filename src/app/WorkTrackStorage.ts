@@ -19,20 +19,11 @@ export interface WorkTrackYearRecord {
 }
 
 export function workTrackStore() {
-  const getRecordsOfDay = (
-    year: number,
-    month: number,
-    day: number
-  ): WorkTrackDayRecord => {
-    const recordKey = buildKey(year, month, day);
-
-    // tslint:disable-next-line:no-console
-    console.log(recordKey);
-
-    return { day: addMissingZero(day), records: [] };
-  };
-
-  const buildKey = (year: number, month: number, day: number) => {
+  const buildKey = (
+    year: number = new Date(Date.now()).getFullYear(),
+    month: number = new Date(Date.now()).getMonth() + 1,
+    day: number = new Date(Date.now()).getDate()
+  ) => {
     const partYear = addMissingZero(year);
     const partMonth = addMissingZero(month);
     const partDay = addMissingZero(day);
@@ -48,5 +39,48 @@ export function workTrackStore() {
     return result;
   };
 
-  return { getRecordsOfDay };
+  const saveRecords = (
+    year: number,
+    month: number,
+    day: number,
+    records: WorkTrackRecord[]
+  ): Promise<WorkTrackRecord[]> => {
+    const key = buildKey(year, month, day);
+
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.set({ [key]: records }, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        }
+        console.log('saved');
+        console.log(records);
+        resolve(records);
+      });
+    });
+  };
+
+  const getRecords = async (
+    year: number,
+    month: number,
+    day: number
+  ): Promise<string> => {
+    const key = buildKey(year, month, day);
+    return xxx(key);
+  };
+
+  function xxx(key: string): Promise<string> {
+    return new Promise<string>(resolve => {
+      chrome.storage.local.get(key, val => {
+        console.log('found');
+        console.log(val);
+        resolve(val.toString());
+      });
+    });
+  }
+
+  return {
+    saveRecords,
+    getRecords,
+    buildKey
+  };
 }

@@ -1,19 +1,41 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Title from "./title";
-import { WorkTrackRecord } from "../WorkTrackStorage";
+import { WorkTrackRecord, workTrackStore } from "../WorkTrackStorage";
 import CurrentDayRecords from "../../popup/CurrentDayRecords";
+import { currentTimeRecord } from "../util/Utilities";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
+  const store = workTrackStore();
+
   const [workTrackStarted, setWorkTrackStarted] = useState(false);
-  const [records] = useState<WorkTrackRecord[]>([
-    { s: "08:00", e: "10:00" },
-    { s: "12:00", e: "12:00" }
-  ]);
+  const [records] = useState<WorkTrackRecord[]>(getTodaysRecords());
+
+  const now = new Date(Date.now());
 
   const handlers = {
-    onTrackWorkButtonClick: () => {
-      records.push({ e: "20:00", s: "15:30" });
+    onTrackWorkButtonClick: async () => {
+      const x = currentTimeRecord();
+
+      if (!workTrackStarted) {
+        records.push({ s: x, e: null });
+      } else {
+        records[records.length - 1].e = x;
+      }
+
+      await store.saveRecords(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        now.getDate(),
+        records
+      );
+
+      await store.getRecords(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        now.getDate()
+      );
+
       setWorkTrackStarted(!workTrackStarted);
     }
   };
@@ -27,6 +49,10 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
       <CurrentDayRecords records={records} />
     </>
   );
+};
+
+const getTodaysRecords = (): WorkTrackRecord[] => {
+  return [];
 };
 
 ReactDOM.render(<CurrentDayTracker />, document.getElementById("root"));
