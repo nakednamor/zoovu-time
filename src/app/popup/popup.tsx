@@ -7,11 +7,12 @@ import { currentTimeRecord } from "../util/Utilities";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const store = workTrackStore();
+  const now = new Date(Date.now());
 
   const [workTrackStarted, setWorkTrackStarted] = useState(false);
-  const [records] = useState<WorkTrackRecord[]>(getTodaysRecords());
+  const [records, setRecords] = useState<WorkTrackRecord[]>([]);
 
-  const now = new Date(Date.now());
+  store.getTodaysRecords(setRecords);
 
   const handlers = {
     onTrackWorkButtonClick: async () => {
@@ -30,12 +31,6 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
         records
       );
 
-      await store.getRecords(
-        now.getFullYear(),
-        now.getMonth() + 1,
-        now.getDate()
-      );
-
       setWorkTrackStarted(!workTrackStarted);
     }
   };
@@ -49,10 +44,6 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
       <CurrentDayRecords records={records} />
     </>
   );
-};
-
-const getTodaysRecords = (): WorkTrackRecord[] => {
-  return [];
 };
 
 ReactDOM.render(<CurrentDayTracker />, document.getElementById("root"));

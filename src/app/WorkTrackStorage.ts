@@ -52,35 +52,55 @@ export function workTrackStore() {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         }
-        console.log('saved');
+        console.log("saved");
         console.log(records);
         resolve(records);
       });
     });
   };
 
-  const getRecords = async (
+  const getRecords = (
     year: number,
     month: number,
     day: number
-  ): Promise<string> => {
+  ): Promise<WorkTrackRecord[]> => {
     const key = buildKey(year, month, day);
-    return xxx(key);
-  };
-
-  function xxx(key: string): Promise<string> {
-    return new Promise<string>(resolve => {
+    return new Promise<WorkTrackRecord[]>((resolve, reject) => {
       chrome.storage.local.get(key, val => {
-        console.log('found');
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        }
+
+        console.log("found");
         console.log(val);
-        resolve(val.toString());
+        resolve(val[key]);
       });
     });
-  }
+  };
+
+  const getTodaysRecords = callback => {
+    function success(val) {
+      console.log("im success");
+      console.log(val);
+      callback(val);
+    }
+
+    function error(data) {
+      console.log("im error");
+      console.log(data);
+    }
+
+    const now = new Date(Date.now());
+    getRecords(now.getFullYear(), now.getMonth() + 1, now.getDate()).then(
+      success,
+      error
+    );
+  };
 
   return {
     saveRecords,
     getRecords,
-    buildKey
+    buildKey,
+    getTodaysRecords
   };
 }
