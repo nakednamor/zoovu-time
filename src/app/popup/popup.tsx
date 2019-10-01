@@ -11,8 +11,8 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
 
   const [workTrackStarted, setWorkTrackStarted] = useState(false);
   const [records, setRecords] = useState<WorkTrackRecord[]>([]);
-
-  store.getTodaysRecords(setRecords);
+  // store.getMonthlyRecords(now.getFullYear(), now.getMonth() + 1, () => {});  TODO same as below
+  store.getTodaysRecords(setRecords); // TODO this causes the component to be re-rendered all the time !!!
 
   const handlers = {
     onTrackWorkButtonClick: async () => {
