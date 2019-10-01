@@ -1,3 +1,5 @@
+import { log } from "./util/Utilities";
+
 export interface WorkTrackRecord {
   s: string;
   e: string | null;
@@ -52,8 +54,7 @@ export function workTrackStore() {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         }
-        console.log("saved");
-        console.log(records);
+        log("saved records", records);
         resolve(records);
       });
     });
@@ -71,8 +72,6 @@ export function workTrackStore() {
           reject(chrome.runtime.lastError);
         }
 
-        console.log("found");
-        console.log(val);
         resolve(val[key]);
       });
     });
@@ -85,8 +84,6 @@ export function workTrackStore() {
           reject(chrome.runtime.lastError);
         }
 
-        console.log("found multiple values by keys");
-
         const result: WorkTrackRecord[] = [];
         Object.keys(val).forEach(key => {
           if (val[key]) {
@@ -94,7 +91,6 @@ export function workTrackStore() {
           }
         });
 
-        console.log(result);
         resolve(result);
       });
     });
@@ -102,14 +98,12 @@ export function workTrackStore() {
 
   const getTodaysRecords = callback => {
     function success(val) {
-      console.log("im success");
-      console.log(val);
       callback(val);
     }
 
     function error(data) {
-      console.log("im error");
-      console.log(data);
+      log("inside error handler", data);
+      callback([]);
     }
 
     const now = new Date(Date.now());
@@ -130,19 +124,14 @@ export function workTrackStore() {
 
   const getMonthlyRecords = (year: number, month: number, callback) => {
     function success(val) {
-      console.log("im success");
-      console.log(val);
       callback(val);
     }
 
     function error(data) {
-      console.log("im error");
-      console.log(data);
+      log("error handler", data);
     }
 
     const keys = buildKeys(year, month);
-    console.log(keys);
-
     getRecords(keys).then(success, error);
   };
 

@@ -16,3 +16,12 @@ const addMissingZero = (val: number, expectedLength: number = 2): string => {
   }
   return result;
 };
+
+export const log = (msg: string, obj): void => {
+  // tslint:disable-next-line:no-console
+  console.log(msg);
+  if (obj) {
+    // tslint:disable-next-line:no-console
+    console.log(obj);
+  }
+};

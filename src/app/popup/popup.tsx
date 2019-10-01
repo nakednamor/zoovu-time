@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import Title from "./title";
 import { WorkTrackRecord, workTrackStore } from "../WorkTrackStorage";
@@ -12,7 +12,14 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const [workTrackStarted, setWorkTrackStarted] = useState(false);
   const [records, setRecords] = useState<WorkTrackRecord[]>([]);
   // store.getMonthlyRecords(now.getFullYear(), now.getMonth() + 1, () => {});  TODO same as below
-  store.getTodaysRecords(setRecords); // TODO this causes the component to be re-rendered all the time !!!
+
+  useMemo(() => {
+    store.getTodaysRecords(todayRecords => {
+      if (todayRecords && records.length !== todayRecords.length) {
+        setRecords(todayRecords);
+      }
+    });
+  }, []);
 
   const handlers = {
     onTrackWorkButtonClick: async () => {
