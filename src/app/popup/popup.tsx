@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import Title from "./title";
 import { WorkTrackRecord, workTrackStore } from "../WorkTrackStorage";
 import CurrentDayRecords from "../../popup/CurrentDayRecords";
-import { currentTimeRecord } from "../util/Utilities";
+import { currentTimeRecord, log } from "../util/Utilities";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const store = workTrackStore();
@@ -39,6 +39,30 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
       );
 
       setWorkTrackStarted(!workTrackStarted);
+    },
+
+    onApplyButtonClick: () => {
+      log("apply button clicked");
+
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        const currentTabId = tabs[0].id || 0; // || 0 is just to pass lint
+        chrome.tabs.executeScript(
+          currentTabId,
+          {
+            file: "js/apply.js"
+          },
+          () => {
+            // log("executeScript callback!");
+            chrome.tabs.sendMessage(
+              currentTabId,
+              { greeting: "hello" },
+              response => {
+                log("response from apply.js", response.farewell);
+              }
+            );
+          }
+        );
+      });
     }
   };
 
@@ -49,6 +73,10 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
         {workTrackStarted ? "STOP" : "START"} Work
       </button>
       <CurrentDayRecords records={records} />
+
+      <button id="apply" onClick={handlers.onApplyButtonClick}>
+        apply records
+      </button>
     </>
   );
 };
