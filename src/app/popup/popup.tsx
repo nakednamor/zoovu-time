@@ -62,6 +62,10 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
           }
         );
       });
+    },
+
+    removeAllRecords: () => {
+      store.removeAllRecords(log("all records are removed from storage"));
     }
   };
 
@@ -75,6 +79,10 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
 
       <button id="apply" onClick={handlers.onApplyButtonClick}>
         apply records
+      </button>
+
+      <button id="remove-all" onClick={handlers.removeAllRecords}>
+        REMOVE ALL RECORDS
       </button>
     </>
   );

@@ -116,4 +116,8 @@ export class WorkTrackStore {
     const keys = this.buildKeys(year, month);
     this.getRecords(keys).then(success, error);
   };
+
+  removeAllRecords = callback => {
+    chrome.storage.local.clear(callback);
+  };
 }
