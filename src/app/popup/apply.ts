@@ -10,3 +10,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ farewell: "goodbye" });
   }
 });
+
+const selector =
+  "#addRegularizationPage table#attRegTable tbody tr:not(#attDetailsListRow)";
+const dataRows = document.querySelectorAll(selector);
+
+dataRows.forEach(row => {
+  const inputFrom = row.querySelector(
+    "input#ZPAtt_reg_fromTime"
+  ) as HTMLInputElement;
+  const inputTo = row.querySelector(
+    "input#ZPAtt_reg_toTime"
+  ) as HTMLInputElement;
+
+  if (inputFrom) {
+    inputFrom.value = "8:00 AM";
+  }
+  if (inputTo) {
+    inputTo.value = "4:00 PM";
+  }
+});
