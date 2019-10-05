@@ -9,7 +9,10 @@ export const currentTimeRecord = (): string => {
   return h + ":" + m;
 };
 
-const addMissingZero = (val: number, expectedLength: number = 2): string => {
+export const addMissingZero = (
+  val: number,
+  expectedLength: number = 2
+): string => {
   let result = "" + val;
   while (result.length < expectedLength) {
     result = "0" + result;

@@ -12,7 +12,7 @@ const CurrentDayRecords: React.FunctionComponent<Props> = ({ records }) => {
         return (
           <>
             <h3 key={i}>
-              {r.s} - {r.e}
+              {r.start} - {r.end}
             </h3>
           </>
         );

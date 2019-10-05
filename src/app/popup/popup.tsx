@@ -1,17 +1,16 @@
 import React, { useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import Title from "./title";
-import { WorkTrackRecord, workTrackStore } from "../WorkTrackStorage";
+import { WorkTrackRecord, WorkTrackStore } from "../WorkTrackStorage";
 import CurrentDayRecords from "../../popup/CurrentDayRecords";
 import { currentTimeRecord, log } from "../util/Utilities";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
-  const store = workTrackStore();
+  const store = new WorkTrackStore();
   const now = new Date(Date.now());
 
   const [workTrackStarted, setWorkTrackStarted] = useState(false);
   const [records, setRecords] = useState<WorkTrackRecord[]>([]);
-  // store.getMonthlyRecords(now.getFullYear(), now.getMonth() + 1, () => {});  TODO same as below
 
   useMemo(() => {
     store.getTodaysRecords(todayRecords => {
@@ -26,9 +25,9 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
       const x = currentTimeRecord();
 
       if (!workTrackStarted) {
-        records.push({ s: x, e: null });
+        records.push({ start: x, end: null });
       } else {
-        records[records.length - 1].e = x;
+        records[records.length - 1].end = x;
       }
 
       await store.saveRecords(

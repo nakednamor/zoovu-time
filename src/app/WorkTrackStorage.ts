@@ -1,27 +1,17 @@
-import { log } from "./util/Utilities";
+import { addMissingZero, log } from "./util/Utilities";
 
 export interface WorkTrackRecord {
-  s: string;
-  e: string | null;
+  start: string;
+  end: string | null;
 }
 
 export interface WorkTrackDayRecord {
-  day: string;
+  date: string;
   records: WorkTrackRecord[];
 }
 
-export interface WorkTrackMonthRecord {
-  month: string;
-  records: WorkTrackDayRecord[];
-}
-
-export interface WorkTrackYearRecord {
-  year: string;
-  records: WorkTrackMonthRecord[];
-}
-
-export function workTrackStore() {
-  const buildKey = (
+export class WorkTrackStore {
+  buildKey = (
     year: number = new Date(Date.now()).getFullYear(),
     month: number = new Date(Date.now()).getMonth() + 1,
     day: number = new Date(Date.now()).getDate()
@@ -33,21 +23,13 @@ export function workTrackStore() {
     return partYear + "_" + partMonth + "_" + partDay;
   };
 
-  const addMissingZero = (val: number, expectedLength: number = 2): string => {
-    let result = "" + val;
-    while (result.length < expectedLength) {
-      result = "0" + result;
-    }
-    return result;
-  };
-
-  const saveRecords = (
+  saveRecords = (
     year: number,
     month: number,
     day: number,
     records: WorkTrackRecord[]
   ): Promise<WorkTrackRecord[]> => {
-    const key = buildKey(year, month, day);
+    const key = this.buildKey(year, month, day);
 
     return new Promise((resolve, reject) => {
       chrome.storage.local.set({ [key]: records }, () => {
@@ -60,12 +42,12 @@ export function workTrackStore() {
     });
   };
 
-  const getSingleRecords = (
+  getSingleRecords = (
     year: number,
     month: number,
     day: number
   ): Promise<WorkTrackRecord[]> => {
-    const key = buildKey(year, month, day);
+    const key = this.buildKey(year, month, day);
     return new Promise<WorkTrackRecord[]>((resolve, reject) => {
       chrome.storage.local.get(key, val => {
         if (chrome.runtime.lastError) {
@@ -77,7 +59,7 @@ export function workTrackStore() {
     });
   };
 
-  function getRecords(keys: string[]): Promise<WorkTrackRecord[]> {
+  getRecords = (keys: string[]): Promise<WorkTrackRecord[]> => {
     return new Promise<WorkTrackRecord[]>((resolve, reject) => {
       chrome.storage.local.get(keys, val => {
         if (chrome.runtime.lastError) {
@@ -94,9 +76,9 @@ export function workTrackStore() {
         resolve(result);
       });
     });
-  }
+  };
 
-  const getTodaysRecords = callback => {
+  getTodaysRecords = callback => {
     function success(val) {
       callback(val);
     }
@@ -107,22 +89,22 @@ export function workTrackStore() {
     }
 
     const now = new Date(Date.now());
-    getSingleRecords(now.getFullYear(), now.getMonth() + 1, now.getDate()).then(
-      success,
-      error
-    );
+    this.getSingleRecords(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      now.getDate()
+    ).then(success, error);
   };
-
-  function buildKeys(year: number, month: number): string[] {
+  buildKeys = (year: number, month: number): string[] => {
     const keys: string[] = [];
     for (let i = 1; i <= 31; i++) {
-      keys.push(buildKey(year, month, i));
+      keys.push(this.buildKey(year, month, i));
     }
 
     return keys;
-  }
+  };
 
-  const getMonthlyRecords = (year: number, month: number, callback) => {
+  getMonthlyRecords = (year: number, month: number, callback) => {
     function success(val) {
       callback(val);
     }
@@ -131,15 +113,7 @@ export function workTrackStore() {
       log("error handler", data);
     }
 
-    const keys = buildKeys(year, month);
-    getRecords(keys).then(success, error);
-  };
-
-  return {
-    saveRecords,
-    getRecords: getSingleRecords,
-    buildKey,
-    getTodaysRecords,
-    getMonthlyRecords
+    const keys = this.buildKeys(year, month);
+    this.getRecords(keys).then(success, error);
   };
 }
