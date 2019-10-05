@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import Title from "./title";
-import { WorkTrackRecord, WorkTrackStore } from "../WorkTrackStorage";
+import { WorkTrackStore } from "../WorkTrackStorage";
 import CurrentDayRecords from "../../popup/CurrentDayRecords";
 import { currentTimeRecord, log } from "../util/Utilities";
+import { WorkTrackRecord } from "../WorkTrackRecord";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore();

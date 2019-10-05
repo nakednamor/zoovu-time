@@ -1,14 +1,6 @@
-import { addMissingZero, log } from "./util/Utilities";
-
-export interface WorkTrackRecord {
-  start: string;
-  end: string | null;
-}
-
-export interface WorkTrackDayRecord {
-  date: string;
-  records: WorkTrackRecord[];
-}
+import { addMissingZero, log, removeLeadingZeros } from "./util/Utilities";
+import { WorkTrackRecord } from "./WorkTrackRecord";
+import { WorkTrackDayRecord } from "./WorkTrackDayRecord";
 
 export class WorkTrackStore {
   saveRecords = (
@@ -65,19 +57,6 @@ export class WorkTrackStore {
     ).then(success, error);
   };
 
-  getMonthlyRecords = (year: number, month: number, callback) => {
-    function success(val) {
-      callback(val);
-    }
-
-    function error(data) {
-      log("error handler", data);
-    }
-
-    const keys = this._buildKeys(year, month);
-    this._getRecords(keys).then(success, error);
-  };
-
   removeAllRecords = callback => {
     chrome.storage.local.clear(callback);
   };
@@ -94,31 +73,49 @@ export class WorkTrackStore {
     return partYear + "_" + partMonth + "_" + partDay;
   };
 
-  private _buildKeys = (year: number, month: number): string[] => {
-    const keys: string[] = [];
-    for (let i = 1; i <= 31; i++) {
-      keys.push(this._buildKey(year, month, i));
+  private _convertFromStorage = (
+    key: string,
+    records: number[] | undefined
+  ): WorkTrackDayRecord => {
+    const dayRecord = new WorkTrackDayRecord(key);
+
+    if (!records) {
+      return dayRecord;
     }
 
-    return keys;
+    // tslint:disable-next-line:prefer-for-of
+    for (const i = 0; i < records.length; i + 2) {
+      const record = new WorkTrackRecord(
+        addMissingZero(records[i], 4),
+        addMissingZero(records[1 + 1], 4)
+      );
+      dayRecord.records.push(record);
+    }
+
+    if (records.length % 2 !== 0) {
+      dayRecord.records.push(
+        new WorkTrackRecord(addMissingZero(records[records.length - 1], 4))
+      );
+    }
+
+    return dayRecord;
   };
 
-  private _getRecords = (keys: string[]): Promise<WorkTrackRecord[]> => {
-    return new Promise<WorkTrackRecord[]>((resolve, reject) => {
-      chrome.storage.local.get(keys, val => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
+  private _convertForStorage = (records: WorkTrackDayRecord[]): any => {
+    const items = {};
+    records.forEach(rec => {
+      const dayRecords: number[] = [];
+
+      rec.records.forEach(r => {
+        dayRecords.push(removeLeadingZeros(r.start));
+        if (r.end) {
+          dayRecords.push(removeLeadingZeros(r.end));
         }
-
-        const result: WorkTrackRecord[] = [];
-        Object.keys(val).forEach(key => {
-          if (val[key]) {
-            result.push(result[key]);
-          }
-        });
-
-        resolve(result);
       });
+
+      items[rec.date] = dayRecords;
     });
+
+    return items;
   };
 }

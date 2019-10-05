@@ -28,3 +28,16 @@ export const log = (msg: string, obj?): void => {
     console.log(obj);
   }
 };
+
+export const removeLeadingZeros = (val: string): number => {
+  let tmp = val[val.length - 1];
+  for (let i = 0; i < val.length - 1; i++) {
+    if (val[i] !== "0" && val[i] !== ":") {
+      break;
+    } else {
+      tmp = val[i] + tmp;
+    }
+  }
+
+  return +tmp;
+};
