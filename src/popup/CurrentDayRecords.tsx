@@ -1,5 +1,5 @@
 import React from "react";
-import { WorkTrackRecord } from "../app/WorkTrackStorage";
+import { WorkTrackRecord } from "../app/WorkTrackRecord";
 
 interface Props {
   records: WorkTrackRecord[];
