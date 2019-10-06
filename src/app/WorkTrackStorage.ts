@@ -1,15 +1,23 @@
 import { addMissingZero, log, removeLeadingZeros } from "./util/Utilities";
 import { WorkTrackRecord } from "./WorkTrackRecord";
 import { WorkTrackDayRecord } from "./WorkTrackDayRecord";
+import StorageArea = chrome.storage.StorageArea;
 
 export class WorkTrackStore {
+  // @ts-ignore
+  private storageArea;
+
+  constructor(storageArea: StorageArea) {
+    this.storageArea = storageArea;
+  }
+
   saveRecords = (
     year: number,
     month: number,
     day: number,
     records: WorkTrackRecord[]
   ): Promise<WorkTrackRecord[]> => {
-    const key = this._buildKey(year, month, day);
+    const key = this.buildKey(year, month, day);
 
     return new Promise((resolve, reject) => {
       chrome.storage.local.set({ [key]: records }, () => {
@@ -27,7 +35,7 @@ export class WorkTrackStore {
     month: number,
     day: number
   ): Promise<WorkTrackRecord[]> => {
-    const key = this._buildKey(year, month, day);
+    const key = this.buildKey(year, month, day);
     return new Promise<WorkTrackRecord[]>((resolve, reject) => {
       chrome.storage.local.get(key, val => {
         if (chrome.runtime.lastError) {
@@ -61,18 +69,15 @@ export class WorkTrackStore {
     chrome.storage.local.clear(callback);
   };
 
-  private _buildKey = (
-    year: number = new Date(Date.now()).getFullYear(),
-    month: number = new Date(Date.now()).getMonth() + 1,
-    day: number = new Date(Date.now()).getDate()
-  ): string => {
-    const partYear = addMissingZero(year);
+  buildKey = (year: number, month: number, day: number): string => {
+    const partYear = addMissingZero(year, 4);
     const partMonth = addMissingZero(month);
     const partDay = addMissingZero(day);
 
     return partYear + "_" + partMonth + "_" + partDay;
   };
 
+  // @ts-ignore
   private _convertFromStorage = (
     key: string,
     records: number[] | undefined
@@ -101,6 +106,7 @@ export class WorkTrackStore {
     return dayRecord;
   };
 
+  // @ts-ignore
   private _convertForStorage = (records: WorkTrackDayRecord[]): any => {
     const items = {};
     records.forEach(rec => {
