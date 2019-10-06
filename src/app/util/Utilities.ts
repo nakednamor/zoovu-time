@@ -30,14 +30,7 @@ export const log = (msg: string, obj?): void => {
 };
 
 export const removeLeadingZeros = (val: string): number => {
-  let tmp = val[val.length - 1];
-  for (let i = 0; i < val.length - 1; i++) {
-    if (val[i] !== "0" && val[i] !== ":") {
-      break;
-    } else {
-      tmp = val[i] + tmp;
-    }
-  }
-
+  let tmp = val.replace(/^0*/, "");
+  tmp = tmp.replace(/:/, "");
   return +tmp;
 };
