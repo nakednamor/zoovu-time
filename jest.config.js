@@ -3,8 +3,15 @@
 
 module.exports = {
 
-  // von ZP frontend
+  // from ZP frontend
   roots: ['<rootDir>/src'],
+  testRegex: '/__tests__/.*\\.spec\\.(js|jsx|ts|tsx)$',
+
+  // modulePaths: ["<rootDir>/src/app/", "<rootDir>/src/app/util"],
+  transform: {
+    "^.+\\.tsx?$": "ts-jest"
+  },
+
 
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
