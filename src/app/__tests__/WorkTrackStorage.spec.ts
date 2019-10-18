@@ -84,6 +84,10 @@ describe("WorkTrackStorage", () => {
   });
 
   describe("getTodaysRecords()", () => {
-    test.todo("should return ");
+    test.todo("should return empty array when there are no records ");
+    test.todo("should return single work-track records");
+    test.todo("should return 2 work-track records");
+    test.todo("should return 3 work-track records");
+    test.todo("should call error callback in case storage error happens");
   });
 });
