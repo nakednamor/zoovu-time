@@ -2,13 +2,20 @@ import { addMissingZero, log, removeLeadingZeros } from "./util/Utilities";
 import { WorkTrackRecord } from "./WorkTrackRecord";
 import { WorkTrackDayRecord } from "./WorkTrackDayRecord";
 import StorageArea = chrome.storage.StorageArea;
+import LastError = chrome.runtime.LastError;
+
+export interface ChromeRuntime {
+  lastError: LastError | undefined;
+}
 
 export class WorkTrackStore {
   // @ts-ignore
-  private storageArea;
+  private storageArea: StorageArea;
+  private chromeRuntime: ChromeRuntime;
 
-  constructor(storageArea: StorageArea) {
+  constructor(storageArea: StorageArea, chromeRuntime: ChromeRuntime) {
     this.storageArea = storageArea;
+    this.chromeRuntime = chromeRuntime;
   }
 
   saveRecords = (
@@ -24,7 +31,6 @@ export class WorkTrackStore {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         }
-        log("saved records", records);
         resolve(records);
       });
     });
@@ -37,9 +43,9 @@ export class WorkTrackStore {
   ): Promise<WorkTrackRecord[]> => {
     const key = this.buildKey(year, month, day);
     return new Promise<WorkTrackRecord[]>((resolve, reject) => {
-      chrome.storage.local.get(key, val => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
+      this.storageArea.get(key, val => {
+        if (this.chromeRuntime.lastError) {
+          reject(this.chromeRuntime.lastError.message);
         }
 
         resolve(val[key]);
@@ -47,7 +53,7 @@ export class WorkTrackStore {
     });
   };
 
-  getTodaysRecords = callback => {
+  getTodaysRecords = (callback: (records: WorkTrackRecord[]) => void) => {
     function success(val) {
       callback(val);
     }
@@ -92,7 +98,7 @@ export class WorkTrackStore {
     for (const i = 0; i < records.length; i + 2) {
       const record = new WorkTrackRecord(
         addMissingZero(records[i], 4),
-        addMissingZero(records[1 + 1], 4)
+        addMissingZero(records[i + 1], 4)
       );
       dayRecord.records.push(record);
     }

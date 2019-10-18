@@ -7,7 +7,7 @@ import { currentTimeRecord, log } from "../util/Utilities";
 import { WorkTrackRecord } from "../WorkTrackRecord";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
-  const store = new WorkTrackStore(chrome.storage.local);
+  const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
   const now = new Date(Date.now());
 
   const [workTrackStarted, setWorkTrackStarted] = useState(false);
