@@ -1,8 +1,8 @@
-import { addMissingZero, log, removeLeadingZeros } from "./util/Utilities";
+import { addMissingZero } from "./util/Utilities";
 import { WorkTrackRecord } from "./WorkTrackRecord";
-import { WorkTrackDayRecord } from "./WorkTrackDayRecord";
 import StorageArea = chrome.storage.StorageArea;
 import LastError = chrome.runtime.LastError;
+import { WorkTrackDayRecord } from "./WorkTrackDayRecord";
 
 export interface ChromeRuntime {
   lastError: LastError | undefined;
@@ -40,9 +40,9 @@ export class WorkTrackStore {
     year: number,
     month: number,
     day: number
-  ): Promise<WorkTrackRecord[]> => {
+  ): Promise<number[]> => {
     const key = this.buildKey(year, month, day);
-    return new Promise<WorkTrackRecord[]>((resolve, reject) => {
+    return new Promise<number[]>((resolve, reject) => {
       this.storageArea.get(key, val => {
         if (this.chromeRuntime.lastError) {
           reject(this.chromeRuntime.lastError.message);
@@ -53,22 +53,21 @@ export class WorkTrackStore {
     });
   };
 
-  getTodaysRecords = (callback: (records: WorkTrackRecord[]) => void) => {
-    function success(val) {
-      callback(val);
-    }
-
-    function error(data) {
-      log("inside error handler", data);
-      callback([]);
-    }
-
+  getTodaysRecords = (
+    successCallback: (records: WorkTrackDayRecord) => void,
+    errorCallback: (message: string) => void
+  ) => {
     const now = new Date(Date.now());
     this.getSingleRecords(
       now.getFullYear(),
       now.getMonth() + 1,
       now.getDate()
-    ).then(success, error);
+    ).then(
+      data => {
+        successCallback(this._convertFromStorage(now, data));
+      },
+      error => errorCallback(error)
+    );
   };
 
   removeAllRecords = callback => {
@@ -83,29 +82,43 @@ export class WorkTrackStore {
     return partYear + "_" + partMonth + "_" + partDay;
   };
 
-  // @ts-ignore
+  buildKeyFromDate = (date: Date): string => {
+    return this.buildKey(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      date.getDate()
+    );
+  };
+
   private _convertFromStorage = (
-    key: string,
-    records: number[] | undefined
+    date: Date,
+    records: number[]
   ): WorkTrackDayRecord => {
+    const key = this.buildKeyFromDate(date);
     const dayRecord = new WorkTrackDayRecord(key);
 
     if (!records) {
       return dayRecord;
     }
 
+    const even = records.length % 2 === 0;
+    const loopStop = even ? records.length : records.length - 1;
+
     // tslint:disable-next-line:prefer-for-of
-    for (const i = 0; i < records.length; i + 2) {
+    for (let i = 0; i < loopStop; i = i + 2) {
+      const start = addMissingZero(records[i], 4);
+      const end = addMissingZero(records[i + 1], 4);
       const record = new WorkTrackRecord(
-        addMissingZero(records[i], 4),
-        addMissingZero(records[i + 1], 4)
+        start.slice(0, 2) + ":" + start.slice(2),
+        end.slice(0, 2) + ":" + end.slice(2)
       );
       dayRecord.records.push(record);
     }
 
-    if (records.length % 2 !== 0) {
+    if (!even) {
+      const start = addMissingZero(records[records.length - 1], 4);
       dayRecord.records.push(
-        new WorkTrackRecord(addMissingZero(records[records.length - 1], 4))
+        new WorkTrackRecord(start.slice(0, 2) + ":" + start.slice(2))
       );
     }
 
@@ -113,21 +126,21 @@ export class WorkTrackStore {
   };
 
   // @ts-ignore
-  private _convertForStorage = (records: WorkTrackDayRecord[]): any => {
-    const items = {};
-    records.forEach(rec => {
-      const dayRecords: number[] = [];
-
-      rec.records.forEach(r => {
-        dayRecords.push(removeLeadingZeros(r.start));
-        if (r.end) {
-          dayRecords.push(removeLeadingZeros(r.end));
-        }
-      });
-
-      items[rec.date] = dayRecords;
-    });
-
-    return items;
-  };
+  // private _convertForStorage = (records: WorkTrackDayRecord[]): any => {
+  //   const items = {};
+  //   records.forEach(rec => {
+  //     const dayRecords: number[] = [];
+  //
+  //     rec.records.forEach(r => {
+  //       dayRecords.push(removeLeadingZeros(r.start));
+  //       if (r.end) {
+  //         dayRecords.push(removeLeadingZeros(r.end));
+  //       }
+  //     });
+  //
+  //     items[rec.date] = dayRecords;
+  //   });
+  //
+  //   return items;
+  // };
 }
