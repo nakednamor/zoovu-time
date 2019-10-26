@@ -14,11 +14,14 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const [records, setRecords] = useState<WorkTrackRecord[]>([]);
 
   useMemo(() => {
-    store.getTodaysRecords(todayRecords => {
-      if (todayRecords && records.length !== todayRecords.length) {
-        setRecords(todayRecords);
-      }
-    });
+    store.getTodaysRecords(
+      dayRecord => {
+        if (dayRecord && records.length !== dayRecord.records.length) {
+          setRecords(dayRecord.records);
+        }
+      },
+      error => alert("error happened while getting todays records" + error) // TODO better error handling
+    );
   }, []);
 
   const handlers = {
