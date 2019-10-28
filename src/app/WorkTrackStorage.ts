@@ -27,9 +27,9 @@ export class WorkTrackStore {
     const key = this.buildKey(year, month, day);
 
     return new Promise((resolve, reject) => {
-      chrome.storage.local.set({ [key]: records }, () => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
+      this.storageArea.set({ [key]: records }, () => {
+        if (this.chromeRuntime.lastError) {
+          reject(this.chromeRuntime.lastError.message);
         }
         resolve(records);
       });

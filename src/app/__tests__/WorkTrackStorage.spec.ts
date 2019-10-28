@@ -33,7 +33,7 @@ describe("WorkTrackStorage", () => {
     systemUnderTest = new WorkTrackStore(storageArea, chromeRuntime);
   });
 
-  describe("buildKey", () => {
+  describe("buildKey(..)", () => {
     const testBuildKey = (
       year: number,
       month: number,
@@ -209,6 +209,38 @@ describe("WorkTrackStorage", () => {
       // then
       expect(successCallback).not.toHaveBeenCalled();
       expect(errorCallback).toHaveBeenNthCalledWith(1, storageErrorMessage);
+    });
+  });
+
+  describe("saveRecords(..)", () => {
+    test("should resolve with provided records", () => {
+      // given
+      const records: WorkTrackRecord[] = [
+        new WorkTrackRecord("08:15", "12:30"),
+        new WorkTrackRecord("13:40")
+      ];
+      storageArea.set = jest
+        .fn()
+        .mockImplementation((_keys, callback) => callback());
+
+      // expect
+      return expect(
+        systemUnderTest.saveRecords(2018, 9, 22, records)
+      ).resolves.toEqual(records);
+    });
+
+    test("should resolve with error message", () => {
+      // given
+      const errorMessage = "ups, something bad happened";
+      chromeRuntime.lastError = { message: errorMessage };
+      storageArea.set = jest
+        .fn()
+        .mockImplementation((_keys, callback) => callback(errorMessage));
+
+      // expect
+      return expect(
+        systemUnderTest.saveRecords(2000, 1, 14, [])
+      ).rejects.toEqual(errorMessage);
     });
   });
 });
