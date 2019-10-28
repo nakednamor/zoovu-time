@@ -1,4 +1,4 @@
-import { addMissingZero } from "./util/Utilities";
+import { addMissingZero, removeLeadingZeros } from "./util/Utilities";
 import { WorkTrackRecord } from "./WorkTrackRecord";
 import StorageArea = chrome.storage.StorageArea;
 import LastError = chrome.runtime.LastError;
@@ -18,20 +18,13 @@ export class WorkTrackStore {
     this.chromeRuntime = chromeRuntime;
   }
 
-  saveRecords = (
-    year: number,
-    month: number,
-    day: number,
-    records: WorkTrackRecord[]
-  ): Promise<WorkTrackRecord[]> => {
-    const key = this.buildKey(year, month, day);
-
+  saveRecord = (record: WorkTrackDayRecord): Promise<WorkTrackDayRecord> => {
     return new Promise((resolve, reject) => {
-      this.storageArea.set({ [key]: records }, () => {
+      this.storageArea.set(this._convertForStorage(record), () => {
         if (this.chromeRuntime.lastError) {
           reject(this.chromeRuntime.lastError.message);
         }
-        resolve(records);
+        resolve(record);
       });
     });
   };
@@ -125,22 +118,20 @@ export class WorkTrackStore {
     return dayRecord;
   };
 
-  // @ts-ignore
-  // private _convertForStorage = (records: WorkTrackDayRecord[]): any => {
-  //   const items = {};
-  //   records.forEach(rec => {
-  //     const dayRecords: number[] = [];
-  //
-  //     rec.records.forEach(r => {
-  //       dayRecords.push(removeLeadingZeros(r.start));
-  //       if (r.end) {
-  //         dayRecords.push(removeLeadingZeros(r.end));
-  //       }
-  //     });
-  //
-  //     items[rec.date] = dayRecords;
-  //   });
-  //
-  //   return items;
-  // };
+  private _convertForStorage = (
+    record: WorkTrackDayRecord
+  ): { [key: string]: number[] } => {
+    const items = {};
+    const dayRecords: number[] = [];
+    record.records.forEach(rec => {
+      dayRecords.push(removeLeadingZeros(rec.start));
+      if (rec.end) {
+        dayRecords.push(removeLeadingZeros(rec.end));
+      }
+    });
+
+    items[record.date] = dayRecords;
+
+    return items;
+  };
 }

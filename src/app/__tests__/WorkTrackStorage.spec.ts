@@ -2,7 +2,6 @@ import StorageArea = chrome.storage.StorageArea;
 import { ChromeRuntime, WorkTrackStore } from "../WorkTrackStorage";
 import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
 import { WorkTrackRecord } from "../WorkTrackRecord";
-
 const buildKeyFromDate = (date: Date) => {
   return (
     date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate()
@@ -212,21 +211,22 @@ describe("WorkTrackStorage", () => {
     });
   });
 
-  describe("saveRecords(..)", () => {
-    test("should resolve with provided records", () => {
+  describe("saveRecord(..)", () => {
+    test("should resolve", () => {
       // given
-      const records: WorkTrackRecord[] = [
+      const record = new WorkTrackDayRecord("2018_09_22", [
         new WorkTrackRecord("08:15", "12:30"),
         new WorkTrackRecord("13:40")
-      ];
+      ]);
+
       storageArea.set = jest
         .fn()
-        .mockImplementation((_keys, callback) => callback());
+        .mockImplementation((_items, callback) => callback());
 
       // expect
-      return expect(
-        systemUnderTest.saveRecords(2018, 9, 22, records)
-      ).resolves.toEqual(records);
+      return expect(systemUnderTest.saveRecord(record)).resolves.toEqual(
+        record
+      );
     });
 
     test("should resolve with error message", () => {
@@ -235,11 +235,11 @@ describe("WorkTrackStorage", () => {
       chromeRuntime.lastError = { message: errorMessage };
       storageArea.set = jest
         .fn()
-        .mockImplementation((_keys, callback) => callback(errorMessage));
+        .mockImplementation((_items, callback) => callback(errorMessage));
 
       // expect
       return expect(
-        systemUnderTest.saveRecords(2000, 1, 14, [])
+        systemUnderTest.saveRecord(new WorkTrackDayRecord("2023_01_10", []))
       ).rejects.toEqual(errorMessage);
     });
   });

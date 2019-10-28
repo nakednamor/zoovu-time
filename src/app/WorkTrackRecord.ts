@@ -1,9 +1,21 @@
 export class WorkTrackRecord {
-  start: string;
-  end: string | null;
+  private _start: string;
+  private _end: string | null;
 
   constructor(start: string, end?: string) {
-    this.start = start;
-    this.end = end || null;
+    this._start = start;
+    this._end = end || null;
+  }
+
+  get start(): string {
+    return this._start;
+  }
+
+  get end(): string | null {
+    return this._end;
+  }
+
+  set end(val: string | null) {
+    this._end = val;
   }
 }

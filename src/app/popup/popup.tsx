@@ -5,6 +5,7 @@ import { WorkTrackStore } from "../WorkTrackStorage";
 import CurrentDayRecords from "../../popup/CurrentDayRecords";
 import { currentTimeRecord, log } from "../util/Utilities";
 import { WorkTrackRecord } from "../WorkTrackRecord";
+import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
@@ -29,16 +30,13 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
       const x = currentTimeRecord();
 
       if (!workTrackStarted) {
-        records.push({ start: x, end: null });
+        records.push(new WorkTrackRecord(x));
       } else {
         records[records.length - 1].end = x;
       }
 
-      await store.saveRecords(
-        now.getFullYear(),
-        now.getMonth() + 1,
-        now.getDate(),
-        records
+      await store.saveRecord(
+        new WorkTrackDayRecord(store.buildKeyFromDate(now), records)
       );
 
       setWorkTrackStarted(!workTrackStarted);
