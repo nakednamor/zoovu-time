@@ -19,6 +19,12 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
       dayRecord => {
         if (dayRecord && records.length !== dayRecord.records.length) {
           setRecords(dayRecord.records);
+          if (
+            dayRecord.records.length !== 0 &&
+            !dayRecord.records[dayRecord.records.length - 1].end
+          ) {
+            setWorkTrackStarted(true);
+          }
         }
       },
       error => alert("error happened while getting todays records" + error) // TODO better error handling
