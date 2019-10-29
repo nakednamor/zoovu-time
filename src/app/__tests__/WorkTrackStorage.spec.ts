@@ -2,7 +2,7 @@ import StorageArea = chrome.storage.StorageArea;
 import { ChromeRuntime, WorkTrackStore } from "../WorkTrackStorage";
 import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
 import { WorkTrackRecord } from "../WorkTrackRecord";
-const buildKeyFromDate = (date: Date) => {
+const buildKeyFromDate = (date: Date): string => {
   return (
     date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate()
   );
@@ -241,6 +241,156 @@ describe("WorkTrackStorage", () => {
       return expect(
         systemUnderTest.saveRecord(new WorkTrackDayRecord("2023_01_10", []))
       ).rejects.toEqual(errorMessage);
+    });
+  });
+
+  describe("getRecordsOfMonth(..)", () => {
+    let successCallback;
+    let errorCallback;
+
+    beforeEach(() => {
+      successCallback = jest.fn();
+      errorCallback = jest.fn();
+    });
+
+    const getDatesOfMonth = (year: number, month: number): string[] => {
+      const date = new Date(year, month, 0);
+      const result: string[] = [];
+
+      for (let i = 1; i <= date.getDate(); i++) {
+        const dateString = systemUnderTest.buildKey(year, month, i);
+
+        result.push(dateString);
+      }
+      return result;
+    };
+
+    test("when no entries exist, should return one WorkTrackDays with empty records for each day of month", async () => {
+      // given
+      const year = 2019;
+      const month = 3;
+      const datesOfMonth = getDatesOfMonth(year, month);
+
+      const existingRecords = {};
+      datesOfMonth.forEach(date => (existingRecords[date] = undefined));
+
+      const mockFunction = jest.fn();
+      mockFunction.mockImplementation((_keys, callback) =>
+        callback(existingRecords)
+      );
+      storageArea.get = mockFunction;
+
+      // when
+      await systemUnderTest.getRecordsOfMonth(
+        year,
+        month,
+        successCallback,
+        errorCallback
+      );
+
+      // then
+      expect(storageArea.get).toHaveBeenCalledTimes(1);
+      const actualKeys = mockFunction.mock.calls[0][0];
+      expect(actualKeys).toEqual(datesOfMonth);
+
+      expect(errorCallback).not.toHaveBeenCalled();
+      expect(successCallback).toBeCalledTimes(1);
+      const actual = successCallback.mock.calls[0][0];
+
+      expect(actual.length).toEqual(datesOfMonth.length);
+      for (let i = 0; i < datesOfMonth.length; i++) {
+        const expectedDate = datesOfMonth[i];
+
+        expect(actual[i].date).toEqual(expectedDate);
+        expect(actual[i].records.length).toEqual(0);
+      }
+    });
+
+    test("should return WorkTrackDays", async () => {
+      // given
+      const year = 2020;
+      const month = 2;
+      const datesOfMonth = getDatesOfMonth(year, month);
+
+      const existingRecords = {};
+      datesOfMonth.forEach(date => (existingRecords[date] = undefined));
+      existingRecords["2020_02_02"] = [800, 1200, 1230, 1700];
+      existingRecords["2020_02_10"] = [932, 1310, 1400];
+      existingRecords["2020_02_29"] = [800];
+
+      const expectedWorkTrackDays = {
+        "2020_02_02": new WorkTrackDayRecord("2020_02_02", [
+          new WorkTrackRecord("08:00", "12:00"),
+          new WorkTrackRecord("12:30", "17:00")
+        ]),
+        "2020_02_10": new WorkTrackDayRecord("2020_02_10", [
+          new WorkTrackRecord("09:32", "13:10"),
+          new WorkTrackRecord("14:00")
+        ]),
+        "2020_02_29": new WorkTrackDayRecord("2020_02_29", [
+          new WorkTrackRecord("08:00")
+        ])
+      };
+
+      const mockFunction = jest.fn();
+      mockFunction.mockImplementation((_keys, callback) =>
+        callback(existingRecords)
+      );
+      storageArea.get = mockFunction;
+
+      // when
+      await systemUnderTest.getRecordsOfMonth(
+        year,
+        month,
+        successCallback,
+        errorCallback
+      );
+
+      // then
+      expect(storageArea.get).toHaveBeenCalledTimes(1);
+      const actualKeys = mockFunction.mock.calls[0][0];
+      expect(actualKeys).toEqual(datesOfMonth);
+
+      expect(errorCallback).not.toHaveBeenCalled();
+      expect(successCallback).toBeCalledTimes(1);
+      const actual: WorkTrackDayRecord[] = successCallback.mock.calls[0][0];
+
+      expect(actual.length).toEqual(datesOfMonth.length);
+      for (let i = 0; i < datesOfMonth.length; i++) {
+        const expectedDate = datesOfMonth[i];
+
+        expect(actual[i].date).toEqual(expectedDate);
+
+        if (existingRecords[expectedDate] === undefined) {
+          expect(actual[i].records.length).toEqual(0);
+        } else {
+          const actualWorkDayTrack = actual[i];
+          expect(actualWorkDayTrack).toEqual(
+            expectedWorkTrackDays[expectedDate]
+          );
+        }
+      }
+    });
+
+    test("error callback", async () => {
+      // given
+      const errorMessage = "ups, error occured";
+      chromeRuntime.lastError = { message: errorMessage };
+      storageArea.get = jest
+        .fn()
+        .mockImplementation((_keys, callback) => callback(errorMessage));
+
+      // when
+      await systemUnderTest.getRecordsOfMonth(
+        2020,
+        8,
+        successCallback,
+        errorCallback
+      );
+
+      // then
+      expect(successCallback).not.toHaveBeenCalled();
+      expect(errorCallback).toHaveBeenNthCalledWith(1, errorMessage);
     });
   });
 });

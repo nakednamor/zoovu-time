@@ -1,8 +1,8 @@
 import { addMissingZero, removeLeadingZeros } from "./util/Utilities";
 import { WorkTrackRecord } from "./WorkTrackRecord";
+import { WorkTrackDayRecord } from "./WorkTrackDayRecord";
 import StorageArea = chrome.storage.StorageArea;
 import LastError = chrome.runtime.LastError;
-import { WorkTrackDayRecord } from "./WorkTrackDayRecord";
 
 export interface ChromeRuntime {
   lastError: LastError | undefined;
@@ -83,11 +83,58 @@ export class WorkTrackStore {
     );
   };
 
+  getRecordsOfMonth = (
+    year: number,
+    month: number,
+    successCallback: (records: WorkTrackDayRecord[]) => void,
+    errorCallback: (message: string) => void
+  ) => {
+    const date = new Date(year, month, 0);
+    const keys: string[] = [];
+    for (let i = 1; i <= date.getDate(); i++) {
+      keys.push(this.buildKey(year, month, i));
+    }
+
+    new Promise<{ [keys: string]: number[] }>((resolve, reject) => {
+      this.storageArea.get(keys, val => {
+        if (this.chromeRuntime.lastError) {
+          reject(this.chromeRuntime.lastError.message);
+        }
+
+        const result: { [keys: string]: number[] } = {};
+        keys.forEach(key => {
+          result[key] = val[key] ? val[key] : [];
+        });
+
+        resolve(result);
+      });
+    }).then(
+      data => {
+        const records: WorkTrackDayRecord[] = [];
+        keys.forEach(key => {
+          records.push(this._convertFromStorageUsingString(key, data[key]));
+        });
+
+        successCallback(records);
+      },
+      error => {
+        errorCallback(error);
+      }
+    );
+  };
+
   private _convertFromStorage = (
     date: Date,
     records: number[]
   ): WorkTrackDayRecord => {
     const key = this.buildKeyFromDate(date);
+    return this._convertFromStorageUsingString(key, records);
+  };
+
+  private _convertFromStorageUsingString = (
+    key: string,
+    records: number[]
+  ): WorkTrackDayRecord => {
     const dayRecord = new WorkTrackDayRecord(key);
 
     if (!records) {
