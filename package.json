@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf dist && cpy manifest.json dist && cpy popup.html dist && cpy assets/icons/* dist/icons",
+    "clean": "rm -rf dist && cpy manifest.json dist && cpy *.html dist && cpy assets/icons/* dist/icons",
     "prebuild": "npm run clean",
     "build:contentscript-background": "webpack --config webpack.config.js",
     "build": "npm run build:contentscript-background",
