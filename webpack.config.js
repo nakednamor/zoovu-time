@@ -7,7 +7,8 @@ module.exports = {
   entry: {
     background: "./src/app/background.ts",
     popup: "./src/app/popup/popup.tsx",
-    apply: "./src/app/popup/apply.ts"
+    apply: "./src/app/popup/apply.ts",
+    options: "./src/app/options/options.tsx"
   },
 
   output: {
