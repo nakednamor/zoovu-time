@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 
 const Title: React.FunctionComponent<{}> = ({}) => {
   const [currentTime, setCurrentTime] = useState(new Date(Date.now()));
@@ -19,8 +19,6 @@ const Title: React.FunctionComponent<{}> = ({}) => {
   setInterval(() => {
     setCurrentTime(new Date(Date.now()));
   }, 1000);
-
-  useMemo(() => {}, [currentTime]);
 
   return (
     <>
