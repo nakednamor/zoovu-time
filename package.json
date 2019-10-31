@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf dist && cpy manifest.json dist && cpy *.html dist && cpy assets/icons/* dist/icons",
-    "prebuild": "npm run clean",
+    "prebuild": "npm run clean && yarn test",
     "build:contentscript-background": "webpack --config webpack.config.js",
     "build": "npm run build:contentscript-background",
     "test": "jest"
