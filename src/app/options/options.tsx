@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { WorkTrackStore } from "../WorkTrackStorage";
 import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
+import DayRecord from "./DayRecord";
 
 const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
@@ -30,27 +31,9 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
           <th>total</th>
         </thead>
         <tbody>
-          {records.map(rec => {
-            return (
-              <>
-                <tr>
-                  <td>{rec.date}</td>
-                  <td>
-                    {rec.records.map(r => {
-                      return (
-                        <>
-                          <span>
-                            {r.start}:{r.end ? r.end : ""}
-                          </span>
-                        </>
-                      );
-                    })}
-                  </td>
-                  <td>{rec.getWorkedTimeString()}</td>
-                </tr>
-              </>
-            );
-          })}
+          {records.map(rec => (
+            <DayRecord key={rec.date} record={rec} />
+          ))}
         </tbody>
       </table>
     </>
