@@ -122,9 +122,10 @@ describe("WorkTrackStorage", () => {
 
       // then
       expect(errorCallback).not.toHaveBeenCalled();
-      expect(successCallback).toHaveBeenNthCalledWith(
-        1,
-        expectedWorktrackDayRecord
+      expect(successCallback).toBeCalledTimes(1);
+      const actualWorkTrackDayRecord = successCallback.mock.calls[0][0];
+      expect(JSON.stringify(actualWorkTrackDayRecord)).toEqual(
+        JSON.stringify(expectedWorktrackDayRecord)
       );
     });
     test("should return single work-track records", async () => {
@@ -143,9 +144,10 @@ describe("WorkTrackStorage", () => {
 
       // then
       expect(errorCallback).not.toHaveBeenCalled();
-      expect(successCallback).toHaveBeenNthCalledWith(
-        1,
-        expectedWorktrackDayRecord
+      expect(successCallback).toHaveBeenCalledTimes(1);
+      const actualWorkTrackDayRecord = successCallback.mock.calls[0][0];
+      expect(JSON.stringify(actualWorkTrackDayRecord)).toEqual(
+        JSON.stringify(expectedWorktrackDayRecord)
       );
     });
     test("should return 2 work-track records", async () => {
@@ -165,9 +167,10 @@ describe("WorkTrackStorage", () => {
 
       // then
       expect(errorCallback).not.toHaveBeenCalled();
-      expect(successCallback).toHaveBeenNthCalledWith(
-        1,
-        expectedWorktrackDayRecord
+      expect(successCallback).toHaveBeenCalledTimes(1);
+      const actualWorkTrackDayRecord = successCallback.mock.calls[0][0];
+      expect(JSON.stringify(actualWorkTrackDayRecord)).toEqual(
+        JSON.stringify(expectedWorktrackDayRecord)
       );
     });
 
@@ -189,9 +192,10 @@ describe("WorkTrackStorage", () => {
 
       // then
       expect(errorCallback).not.toHaveBeenCalled();
-      expect(successCallback).toHaveBeenNthCalledWith(
-        1,
-        expectedWorktrackDayRecord
+      expect(successCallback).toHaveBeenCalledTimes(1);
+      const actualWorkTrackDayRecord = successCallback.mock.calls[0][0];
+      expect(JSON.stringify(actualWorkTrackDayRecord)).toEqual(
+        JSON.stringify(expectedWorktrackDayRecord)
       );
     });
     test("should call error callback in case storage error happens", async () => {
@@ -365,8 +369,8 @@ describe("WorkTrackStorage", () => {
           expect(actual[i].records.length).toEqual(0);
         } else {
           const actualWorkDayTrack = actual[i];
-          expect(actualWorkDayTrack).toEqual(
-            expectedWorkTrackDays[expectedDate]
+          expect(JSON.stringify(actualWorkDayTrack)).toEqual(
+            JSON.stringify(expectedWorkTrackDays[expectedDate])
           );
         }
       }
