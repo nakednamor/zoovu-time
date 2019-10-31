@@ -27,6 +27,7 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
         <thead>
           <th>day</th>
           <th>records</th>
+          <th>total</th>
         </thead>
         <tbody>
           {records.map(rec => {
@@ -45,6 +46,7 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
                       );
                     })}
                   </td>
+                  <td>{rec.getWorkedTimeString()}</td>
                 </tr>
               </>
             );
