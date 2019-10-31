@@ -77,11 +77,8 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
     },
 
     showOptionsPage: (): void => {
-      if (chrome.runtime.openOptionsPage) {
-        chrome.runtime.openOptionsPage();
-      } else {
-        window.open(chrome.runtime.getURL("options.html"));
-      }
+      const url = chrome.runtime.getURL("options.html");
+      window.open(url, "_blank");
     }
   };
 
