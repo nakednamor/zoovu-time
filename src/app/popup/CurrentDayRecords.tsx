@@ -1,6 +1,6 @@
 import React from "react";
-import { WorkTrackRecord } from "../app/WorkTrackRecord";
-import { addMissingZero } from "../app/util/Utilities";
+import { WorkTrackRecord } from "../WorkTrackRecord";
+import { addMissingZero } from "../util/Utilities";
 
 interface Props {
   records: WorkTrackRecord[];

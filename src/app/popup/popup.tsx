@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import Title from "./title";
 import { WorkTrackStore } from "../WorkTrackStorage";
-import CurrentDayRecords from "../../popup/CurrentDayRecords";
+import CurrentDayRecords from "./CurrentDayRecords";
 import { currentTimeRecord, log } from "../util/Utilities";
 import { WorkTrackRecord } from "../WorkTrackRecord";
 import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
