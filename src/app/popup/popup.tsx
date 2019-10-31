@@ -74,6 +74,14 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
 
     removeAllRecords: () => {
       store.removeAllRecords(log("all records are removed from storage"));
+    },
+
+    showOptionsPage: (): void => {
+      if (chrome.runtime.openOptionsPage) {
+        chrome.runtime.openOptionsPage();
+      } else {
+        window.open(chrome.runtime.getURL("options.html"));
+      }
     }
   };
 
@@ -91,6 +99,10 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
 
       <button id="remove-all" onClick={handlers.removeAllRecords}>
         REMOVE ALL RECORDS
+      </button>
+
+      <button id="options-page" onClick={handlers.showOptionsPage}>
+        show monthly records
       </button>
     </>
   );
