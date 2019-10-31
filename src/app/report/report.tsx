@@ -6,24 +6,53 @@ import DayRecord from "./DayRecord";
 
 const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
-  const now = new Date(Date.now());
+
+  const getDateWithFirstDayOfCurrentMonth = (): Date => {
+    const now = new Date(Date.now());
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  };
 
   const [records, setRecords] = useState<WorkTrackDayRecord[]>([]);
+  const [currentReportDate, setCurrentReportDate] = useState<Date>(
+    getDateWithFirstDayOfCurrentMonth()
+  );
 
+  const dateArray = store.buildKeyFromDate(currentReportDate).split("_");
   store.getRecordsOfMonth(
-    now.getFullYear(),
-    now.getMonth() + 1,
+    +dateArray[0],
+    +dateArray[1],
     data => {
-      if (records.length === 0) {
+      if (records.length === 0 || data[0].date !== records[0].date) {
         setRecords(data);
       }
     },
     err => alert("error happened: " + err)
   );
 
+  const showPreviousMonth = () => {
+    currentReportDate.setMonth(currentReportDate.getMonth() - 1);
+    setCurrentReportDate(currentReportDate);
+  };
+
+  const showNextMonth = () => {
+    currentReportDate.setMonth(currentReportDate.getMonth() + 1);
+    setCurrentReportDate(currentReportDate);
+  };
+
   return (
     <>
-      <h2>here should records of month show up</h2>
+      <h2>
+        records of month:{" "}
+        {currentReportDate.getFullYear() +
+          "-" +
+          (currentReportDate.getMonth() + 1)}
+      </h2>
+      <button id="month-back" onClick={showPreviousMonth}>
+        &lt; &lt; previous month &lt; &lt;
+      </button>
+      <button id="month-next" onClick={showNextMonth}>
+        >> next month >>
+      </button>
       <table>
         <thead>
           <th>day</th>
