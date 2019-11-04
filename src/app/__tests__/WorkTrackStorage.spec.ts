@@ -2,9 +2,15 @@ import StorageArea = chrome.storage.StorageArea;
 import { ChromeRuntime, WorkTrackStore } from "../WorkTrackStorage";
 import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
 import { WorkTrackRecord } from "../WorkTrackRecord";
+import { addMissingZero } from "../util/Utilities";
+
 const buildKeyFromDate = (date: Date): string => {
   return (
-    date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate()
+    addMissingZero(date.getFullYear()) +
+    "_" +
+    addMissingZero(date.getMonth() + 1) +
+    "_" +
+    addMissingZero(date.getDate())
   );
 };
 
