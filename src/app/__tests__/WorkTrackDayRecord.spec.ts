@@ -173,3 +173,35 @@ describe("validWorkingTimeDuration()", () => {
     });
   });
 });
+
+describe("validEndTime()", () => {
+  const testSetup = [
+    { expected: true, records: [] },
+    { expected: true, records: [["07:30"]] },
+    { expected: true, records: [["08:10", "12:05"]] },
+    { expected: true, records: [["08:10", "12:05"], ["13:00", "17:23"]] },
+    { expected: false, records: [["08:10", "20:00"]] },
+    { expected: false, records: [["08:10", "12:05"], ["13:00", "20:00"]] }
+  ];
+
+  const testValidEndTime = (expected: boolean, records: string[][]): void => {
+    // given
+    const record = new WorkTrackDayRecord("1985_01_18", []);
+    records.forEach(arr => {
+      const rec = new WorkTrackRecord(arr[0], arr[1]);
+      record.records.push(rec);
+    });
+
+    // when
+    const actual = record.validEndTime();
+
+    // then
+    expect(actual).toEqual(expected);
+  };
+
+  testSetup.forEach(setup => {
+    test(`should return: ${setup.expected}`, () => {
+      testValidEndTime(setup.expected, setup.records);
+    });
+  });
+});
