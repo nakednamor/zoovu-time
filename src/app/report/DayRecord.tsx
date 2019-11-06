@@ -35,6 +35,13 @@ const DayRecord: React.FunctionComponent<Props> = ({ record }) => {
           })}
         </td>
         <td>{record.getWorkedTimeString()}</td>
+        <td>
+          <div>
+            <input type="text" value={"" + record.getZohoStartTime()} />
+            -->
+            <input type="text" value={"" + record.getZohoEndTime()} />
+          </div>
+        </td>
       </tr>
     </>
   );

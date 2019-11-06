@@ -59,6 +59,7 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
           <th>day</th>
           <th>records</th>
           <th>total</th>
+          <th>zoho time</th>
         </thead>
         <tbody>
           {records.map(rec => (
