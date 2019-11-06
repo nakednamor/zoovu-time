@@ -55,6 +55,7 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
       </button>
       <table>
         <thead>
+          <th>valid</th>
           <th>day</th>
           <th>records</th>
           <th>total</th>

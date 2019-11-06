@@ -9,6 +9,7 @@ const DayRecord: React.FunctionComponent<Props> = ({ record }) => {
   return (
     <>
       <tr>
+        <td>{record.isValid() ? "yes" : "no"}</td>
         <td>{record.date}</td>
         <td>
           {record.records.map(r => {

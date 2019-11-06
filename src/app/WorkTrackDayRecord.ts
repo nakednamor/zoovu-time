@@ -69,6 +69,14 @@ export class WorkTrackDayRecord {
     return lastEndTime === null || !/2\d:\d\d/.test(lastEndTime);
   };
 
+  public isValid = (): boolean => {
+    return (
+      this.validMinWorkingTimeDuration() &&
+      this.validMaxWorkingTimeDuration() &&
+      this.validEndTime()
+    );
+  };
+
   private _getEndOfLastRecord = (): string | null => {
     if (this._records.length === 0) {
       return null;
