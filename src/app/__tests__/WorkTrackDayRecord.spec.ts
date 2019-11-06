@@ -58,3 +58,72 @@ describe("getWorkedTimeString()", () => {
     });
   });
 });
+
+describe("getZohoStartTime()", () => {
+  const testSetup = [
+    { expected: null, records: [] },
+    { expected: "08:10", records: [["08:10", "12:05"], ["13:00", "17:23"]] },
+    { expected: "08:25", records: [["08:25", "11:55"], ["12:59"]] }
+  ];
+
+  const testGetZohoStartTime = (
+    expected: string | null,
+    records: string[][]
+  ): void => {
+    // given
+    const record = new WorkTrackDayRecord("2017_03_28", []);
+    records.forEach(arr => {
+      const rec = new WorkTrackRecord(arr[0], arr[1]);
+      record.records.push(rec);
+    });
+
+    // when
+    const actual = record.getZohoStartTime();
+
+    // then
+    expect(actual).toEqual(expected);
+  };
+
+  testSetup.forEach(setup => {
+    test(`should return start of first record: ${setup.expected}`, () => {
+      testGetZohoStartTime(setup.expected, setup.records);
+    });
+  });
+});
+
+describe("getZohoEndTime()", () => {
+  const testSetup = [
+    { expected: null, records: [] },
+    { expected: null, records: [["07:30"]] },
+    { expected: "16:28", records: [["08:10", "12:05"], ["13:00", "17:23"]] },
+    {
+      expected: "17:00",
+      records: [["08:00", "11:00"], ["12:00", "16:00"], ["18:00", "20:00"]]
+    },
+    { expected: null, records: [["08:25", "11:55"], ["12:59"]] }
+  ];
+
+  const testGetZohoEndTime = (
+    expected: string | null,
+    records: string[][]
+  ): void => {
+    // given
+    const record = new WorkTrackDayRecord("1985_01_18", []);
+    records.forEach(arr => {
+      const rec = new WorkTrackRecord(arr[0], arr[1]);
+      record.records.push(rec);
+    });
+
+    // when
+    const actual = record.getZohoEndTime();
+
+    // then
+    expect(actual).toEqual(expected);
+  };
+
+  testSetup.forEach(setup => {
+    test(`should return start time + worked time: ${setup.expected}`, () => {
+      testGetZohoEndTime(setup.expected, setup.records);
+    });
+  });
+});

@@ -2,8 +2,8 @@ import { WorkTrackRecord } from "./WorkTrackRecord";
 import { addMissingZero } from "./util/Utilities";
 
 export class WorkTrackDayRecord {
-  private _date: string;
-  private _records: WorkTrackRecord[];
+  private readonly _date: string;
+  private readonly _records: WorkTrackRecord[];
 
   constructor(date: string, records?: WorkTrackRecord[]) {
     this._date = date;
@@ -20,12 +20,7 @@ export class WorkTrackDayRecord {
 
   public getWorkedTimeString = (): string => {
     const minutesWorked: number = this.getWorkingTime();
-
-    return (
-      addMissingZero(Math.floor(minutesWorked / 60)) +
-      ":" +
-      addMissingZero(minutesWorked % 60)
-    );
+    return this._minutesToTimeString(minutesWorked);
   };
 
   public getWorkingTime = (): number => {
@@ -34,5 +29,46 @@ export class WorkTrackDayRecord {
       .reduce((total: number, currentVal: number) => {
         return total + currentVal;
       }, 0);
+  };
+
+  public getZohoStartTime = (): string | null => {
+    return this._records.length === 0 ? null : this._records[0].start;
+  };
+
+  public getZohoEndTime = (): string | null => {
+    const startTimeString: string | null = this.getZohoStartTime();
+    const endTimeString: string | null = this._getEndOfLastRecord();
+
+    if (startTimeString === null || endTimeString === null) {
+      return null;
+    }
+
+    if (this._records.length === 1) {
+      return this.records[0].end;
+    }
+
+    const startTimeArray: string[] = startTimeString.split(":");
+    const startTimeInMinutes: number =
+      +startTimeArray[0] * 60 + +startTimeArray[1];
+
+    return this._minutesToTimeString(
+      startTimeInMinutes + this.getWorkingTime()
+    );
+  };
+
+  private _getEndOfLastRecord = (): string | null => {
+    if (this._records.length === 0) {
+      return null;
+    } else {
+      return this._records[this._records.length - 1].end;
+    }
+  };
+
+  private _minutesToTimeString = (minutes: number): string => {
+    return (
+      addMissingZero(Math.floor(minutes / 60)) +
+      ":" +
+      addMissingZero(minutes % 60)
+    );
   };
 }
