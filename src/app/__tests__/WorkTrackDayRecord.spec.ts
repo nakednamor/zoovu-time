@@ -127,3 +127,49 @@ describe("getZohoEndTime()", () => {
     });
   });
 });
+
+describe("validWorkingTimeDuration()", () => {
+  const testSetup = [
+    { expected: true, records: [] },
+    { expected: true, records: [["07:30"]] },
+    { expected: true, records: [["08:10", "12:05"], ["13:00", "17:23"]] },
+    {
+      expected: true,
+      records: [["08:00", "11:00"], ["12:00", "16:00"], ["18:00", "20:00"]]
+    },
+    { expected: true, records: [["08:25", "11:55"], ["12:59"]] },
+    { expected: false, records: [["08:00", "23:30"]] },
+    {
+      expected: true,
+      records: [["08:00", "12:00"], ["12:30", "17:00"], ["20:00", "21:29"]]
+    },
+    {
+      expected: false,
+      records: [["08:00", "12:00"], ["12:30", "17:00"], ["20:00", "21:30"]]
+    }
+  ];
+
+  const testValidWorkingTimeDuration = (
+    expected: boolean,
+    records: string[][]
+  ): void => {
+    // given
+    const record = new WorkTrackDayRecord("1985_04_16", []);
+    records.forEach(arr => {
+      const rec = new WorkTrackRecord(arr[0], arr[1]);
+      record.records.push(rec);
+    });
+
+    // when
+    const actual: boolean = record.validWorkingTimeDuration();
+
+    // then
+    expect(actual).toEqual(expected);
+  };
+
+  testSetup.forEach(setup => {
+    test(`should return: ${setup.expected}`, () => {
+      testValidWorkingTimeDuration(setup.expected, setup.records);
+    });
+  });
+});

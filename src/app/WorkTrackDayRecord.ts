@@ -56,6 +56,10 @@ export class WorkTrackDayRecord {
     );
   };
 
+  public validWorkingTimeDuration = (): boolean => {
+    return this.getWorkingTime() < 10 * 60;
+  };
+
   private _getEndOfLastRecord = (): string | null => {
     if (this._records.length === 0) {
       return null;
