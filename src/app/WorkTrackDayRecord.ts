@@ -60,6 +60,10 @@ export class WorkTrackDayRecord {
     return this.getWorkingTime() < 10 * 60;
   };
 
+  public validMinWorkingTimeDuration = (): boolean => {
+    return this.getWorkingTime() >= 7 * 60 + 42;
+  };
+
   public validEndTime = (): boolean => {
     const lastEndTime: string | null = this._getEndOfLastRecord();
     return lastEndTime === null || !/2\d:\d\d/.test(lastEndTime);

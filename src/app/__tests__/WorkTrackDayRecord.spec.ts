@@ -205,3 +205,36 @@ describe("validEndTime()", () => {
     });
   });
 });
+
+describe("validMinWorkingTimeDuration()", () => {
+  const testSetup = [
+    { expected: false, records: [] },
+    { expected: false, records: [["07:30"]] },
+    { expected: false, records: [["08:00", "12:00"], ["13:00", "16:41"]] },
+    { expected: true, records: [["08:00", "12:00"], ["13:00", "16:42"]] }
+  ];
+
+  const testValidMinWorkingTimeDuration = (
+    expected: boolean,
+    records: string[][]
+  ): void => {
+    // given
+    const record = new WorkTrackDayRecord("1985_04_16", []);
+    records.forEach(arr => {
+      const rec = new WorkTrackRecord(arr[0], arr[1]);
+      record.records.push(rec);
+    });
+
+    // when
+    const actual: boolean = record.validMinWorkingTimeDuration();
+
+    // then
+    expect(actual).toEqual(expected);
+  };
+
+  testSetup.forEach(setup => {
+    test(`should return: ${setup.expected}`, () => {
+      testValidMinWorkingTimeDuration(setup.expected, setup.records);
+    });
+  });
+});
