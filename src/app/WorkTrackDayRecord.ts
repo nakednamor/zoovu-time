@@ -56,7 +56,7 @@ export class WorkTrackDayRecord {
     );
   };
 
-  public validWorkingTimeDuration = (): boolean => {
+  public validMaxWorkingTimeDuration = (): boolean => {
     return this.getWorkingTime() < 10 * 60;
   };
 

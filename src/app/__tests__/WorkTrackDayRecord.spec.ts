@@ -128,7 +128,7 @@ describe("getZohoEndTime()", () => {
   });
 });
 
-describe("validWorkingTimeDuration()", () => {
+describe("validMaxWorkingTimeDuration()", () => {
   const testSetup = [
     { expected: true, records: [] },
     { expected: true, records: [["07:30"]] },
@@ -149,7 +149,7 @@ describe("validWorkingTimeDuration()", () => {
     }
   ];
 
-  const testValidWorkingTimeDuration = (
+  const testValidMaxWorkingTimeDuration = (
     expected: boolean,
     records: string[][]
   ): void => {
@@ -161,7 +161,7 @@ describe("validWorkingTimeDuration()", () => {
     });
 
     // when
-    const actual: boolean = record.validWorkingTimeDuration();
+    const actual: boolean = record.validMaxWorkingTimeDuration();
 
     // then
     expect(actual).toEqual(expected);
@@ -169,7 +169,7 @@ describe("validWorkingTimeDuration()", () => {
 
   testSetup.forEach(setup => {
     test(`should return: ${setup.expected}`, () => {
-      testValidWorkingTimeDuration(setup.expected, setup.records);
+      testValidMaxWorkingTimeDuration(setup.expected, setup.records);
     });
   });
 });
