@@ -1,0 +1,83 @@
+$teal: #00d2b4;
+$purple: #3c0078;
+$pink: #E6007D;
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 500px;
+  height: 500px;
+  padding: 15px;
+  overflow: auto;
+  background: linear-gradient(237deg, $teal, $purple);
+  background-size: 400% 400%/cover;
+  :global {
+    animation: backgroundGradient 30s ease infinite;
+  }
+}
+
+#root {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.4);
+  padding: 15px;
+}
+
+h1 {
+  text-align: right;
+  font-size: 14px;
+  margin-top: 0;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+.current-day-records {
+    max-height: 300px;
+    overflow: auto;
+    margin-bottom: 20px;
+}
+
+.button-bar {
+    display: flex;
+    flex-flow: row no-wrap;
+    justify-content: flex-start;
+}
+
+button {
+    outline: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(220, 220, 220, 0.3));
+    padding: 7px 10px;
+    text-align: center;
+    border-radius: 6px 0;
+    border: 1px solid $purple;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+    }
+
+    &.track-work--stopped,
+    &.track-work--started {
+        color: #fff;
+        background: $teal;
+        border-radius: 6px;
+        border-color: #fff;
+    }
+    &.track-work--started {
+        background: $pink;
+    }
+}
+
+@keyframes :global(backgroundGradient) {
+  0% {
+    background-position: 61% 0%;
+  }
+  50% {
+    background-position: 40% 100%;
+  }
+  100% {
+    background-position: 61% 0%;
+  }
+}
