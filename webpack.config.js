@@ -21,6 +21,26 @@ module.exports = {
   },
 
   module: {
-    rules: [{ test: /\.tsx?$/, loader: "ts-loader" }]
+    rules: [
+      { 
+        test: /\.tsx?$/, 
+        loader: "ts-loader" 
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ]
+      },
+    ]
   }
 };
