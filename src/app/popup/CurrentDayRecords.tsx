@@ -21,15 +21,17 @@ const CurrentDayRecords: React.FunctionComponent<Props> = ({ records }) => {
   return (
     <>
       <h2>Currently Worked: {workingTimeString}</h2>
+      <div className="current-day-records">
       {records.map((r, i) => {
         return (
-          <>
+          <>    
             <h3 key={i}>
               {r.start} - {r.end}
             </h3>
           </>
         );
       })}
+      </div>
     </>
   );
 };

@@ -6,6 +6,7 @@ import CurrentDayRecords from "./CurrentDayRecords";
 import { currentTimeRecord, log } from "../util/Utilities";
 import { WorkTrackRecord } from "../WorkTrackRecord";
 import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
+import "../scss/style.scss";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
@@ -85,22 +86,28 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   return (
     <>
       <Title />
-      <button id="track-work" onClick={handlers.onTrackWorkButtonClick}>
+      <button
+        id="track-work"
+        onClick={handlers.onTrackWorkButtonClick}
+        className={`${workTrackStarted ? "track-work--started" : "track-work--stopped"}`}
+      >
         {workTrackStarted ? "STOP" : "START"} Work
       </button>
       <CurrentDayRecords records={records} />
 
-      <button id="apply" onClick={handlers.onApplyButtonClick}>
-        apply records
-      </button>
+      <div className="button-bar">
+        <button id="apply" onClick={handlers.onApplyButtonClick}>
+          apply records
+        </button>
 
-      <button id="remove-all" onClick={handlers.removeAllRecords}>
-        REMOVE ALL RECORDS
-      </button>
+        <button id="remove-all" onClick={handlers.removeAllRecords}>
+          REMOVE ALL RECORDS
+        </button>
 
-      <button id="options-page" onClick={handlers.showOptionsPage}>
-        show monthly records
-      </button>
+        <button id="options-page" onClick={handlers.showOptionsPage}>
+          show monthly records
+        </button>
+      </div>
     </>
   );
 };
