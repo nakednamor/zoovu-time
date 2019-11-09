@@ -89,7 +89,9 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
       <button
         id="track-work"
         onClick={handlers.onTrackWorkButtonClick}
-        className={`${workTrackStarted ? "track-work--started" : "track-work--stopped"}`}
+        className={`${
+          workTrackStarted ? "track-work--started" : "track-work--stopped"
+        }`}
       >
         {workTrackStarted ? "STOP" : "START"} Work
       </button>
