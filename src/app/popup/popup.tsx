@@ -129,7 +129,7 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
           {workTrackStarted ? "STOP" : "START"} Work
         </button>
         <span>
-           Working time of today: <strong>{workingTimeString}</strong>
+          Working time of today: <strong>{workingTimeString}</strong>
         </span>
       </div>
 

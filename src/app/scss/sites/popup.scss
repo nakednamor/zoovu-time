@@ -8,8 +8,7 @@ body.popup {
     margin-bottom: 20px;
     position: relative;
 
-    &:before,
-    &:after {
+    &::after {
       content: '';
       display: block;
       position: sticky;
@@ -20,14 +19,9 @@ body.popup {
       pointer-events: none;
     }
   
-    &:before {
-      top: 0;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
-    }
-  
-    &:after {
+    &::after {
       bottom: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.1) 10%, transparent 61%)
     }
 
     h3 {
