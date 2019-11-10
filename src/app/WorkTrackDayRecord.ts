@@ -32,14 +32,18 @@ export class WorkTrackDayRecord {
   };
 
   public getZohoStartTime = (): string | null => {
-    return this._records.length === 0 ? null : this._records[0].start;
+    const startTime: string | null = this._getFirstStartTime();
+    if (startTime) {
+      return this._timeStringTo12HourFormat(startTime);
+    } else {
+      return null;
+    }
   };
 
   public getZohoEndTime = (): string | null => {
-    const startTimeString: string | null = this.getZohoStartTime();
-    const endTimeString: string | null = this._getEndOfLastRecord();
+    const startTimeString: string | null = this._getFirstStartTime();
 
-    if (startTimeString === null || endTimeString === null) {
+    if (startTimeString === null || this._getEndOfLastRecord() === null) {
       return null;
     }
 
@@ -47,13 +51,10 @@ export class WorkTrackDayRecord {
       return this.records[0].end;
     }
 
-    const startTimeArray: string[] = startTimeString.split(":");
-    const startTimeInMinutes: number =
-      +startTimeArray[0] * 60 + +startTimeArray[1];
-
-    return this._minutesToTimeString(
-      startTimeInMinutes + this.getWorkingTime()
-    );
+    const endTimeMinutes: number =
+      this._timeStringToMinutes(startTimeString) + this.getWorkingTime();
+    const endTimeString: string = this._minutesToTimeString(endTimeMinutes);
+    return this._timeStringTo12HourFormat(endTimeString);
   };
 
   public validMaxWorkingTimeDuration = (): boolean => {
@@ -91,5 +92,23 @@ export class WorkTrackDayRecord {
       ":" +
       addMissingZero(minutes % 60)
     );
+  };
+
+  private _timeStringToMinutes = (time: string): number => {
+    const array: string[] = time.split(":");
+    return +array[0] * 60 + +array[1];
+  };
+
+  private _timeStringTo12HourFormat = (time: string): string => {
+    const minutes: number = this._timeStringToMinutes(time);
+    const minutesToUse: number = minutes - 720 < 0 ? minutes : minutes - 720;
+    const suffix: string = minutes - 720 < 0 ? " AM" : " PM";
+
+    const timeString: string = this._minutesToTimeString(minutesToUse);
+    return timeString.replace(/^0/, "") + suffix;
+  };
+
+  private _getFirstStartTime = (): string | null => {
+    return this._records.length === 0 ? null : this._records[0].start;
   };
 }

@@ -15,6 +15,7 @@ import {
   Event
 } from "@material-ui/icons/";
 import { addMissingZero } from "../util/Utilities";
+import Port = chrome.runtime.Port;
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
@@ -70,24 +71,32 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
     onApplyButtonClick: () => {
       log("apply button clicked");
 
+      chrome.runtime.onConnect.addListener((port: Port) => {
+        if (port.name !== "ZoovuTime Apply ContentScript") {
+          log("received wrong connection from content script", port);
+        } else {
+          port.onMessage.addListener((message: any): void => {
+            const requestedDate: Date = new Date(message.date);
+
+            const dateArray = store.buildKeyFromDate(requestedDate).split("_");
+            store.getRecordsOfMonth(
+              +dateArray[0],
+              +dateArray[1],
+              data => {
+                port.postMessage({ records: data });
+              },
+              err =>
+                alert("error happened while getting monthly records: " + err)
+            );
+          });
+        }
+      });
+
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         const currentTabId = tabs[0].id || 0; // || 0 is just to pass lint
-        chrome.tabs.executeScript(
-          currentTabId,
-          {
-            file: "js/apply.js"
-          },
-          () => {
-            // log("executeScript callback!");
-            chrome.tabs.sendMessage(
-              currentTabId,
-              { greeting: "hello" },
-              response => {
-                log("response from apply.js", response.farewell);
-              }
-            );
-          }
-        );
+        chrome.tabs.executeScript(currentTabId, {
+          file: "js/apply.js"
+        });
       });
     },
 

@@ -62,8 +62,10 @@ describe("getWorkedTimeString()", () => {
 describe("getZohoStartTime()", () => {
   const testSetup = [
     { expected: null, records: [] },
-    { expected: "08:10", records: [["08:10", "12:05"], ["13:00", "17:23"]] },
-    { expected: "08:25", records: [["08:25", "11:55"], ["12:59"]] }
+    { expected: "8:10 AM", records: [["08:10", "12:05"], ["13:00", "17:23"]] },
+    { expected: "8:05 AM", records: [["08:05", "12:05"], ["13:00", "17:18"]] },
+    { expected: "11:08 AM", records: [["11:08", "11:55"], ["12:59"]] },
+    { expected: "2:09 PM", records: [["14:09", "15:50"]] }
   ];
 
   const testGetZohoStartTime = (
@@ -95,12 +97,16 @@ describe("getZohoEndTime()", () => {
   const testSetup = [
     { expected: null, records: [] },
     { expected: null, records: [["07:30"]] },
-    { expected: "16:28", records: [["08:10", "12:05"], ["13:00", "17:23"]] },
+    { expected: "4:28 PM", records: [["08:10", "12:05"], ["13:00", "17:23"]] },
     {
-      expected: "17:00",
+      expected: "5:00 PM",
       records: [["08:00", "11:00"], ["12:00", "16:00"], ["18:00", "20:00"]]
     },
-    { expected: null, records: [["08:25", "11:55"], ["12:59"]] }
+    { expected: null, records: [["08:25", "11:55"], ["12:59"]] },
+    {
+      expected: "10:03 PM",
+      records: [["16:00", "21:30"], ["22:00", "22:33"]]
+    }
   ];
 
   const testGetZohoEndTime = (
