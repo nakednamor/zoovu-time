@@ -1,0 +1,80 @@
+body.popup {
+  width: 500px;
+  height: auto;
+
+  .current-day-records {
+    max-height: 230px;
+    overflow: auto;
+    margin-bottom: 20px;
+    position: relative;
+
+    &:before,
+    &:after {
+      content: '';
+      display: block;
+      position: sticky;
+      z-index: 1;
+      left: 0;
+      height: 24px;
+      // clicks/touches will go through them
+      pointer-events: none;
+    }
+  
+    &:before {
+      top: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
+    }
+  
+    &:after {
+      bottom: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin: 0 0 10px 0;
+    }
+  }
+
+  .tracker-bar {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+
+    span {
+      font-size: 0.875rem;
+    }
+
+    strong {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 2px 8px;
+      font-weight: 700;
+      font-size: 1.125rem;
+      border-radius: 5px;
+    }
+  }
+
+  .track-work--stopped,
+  .track-work--started {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    z-index: 1;
+    color: #fff;
+    text-shadow: 0 0 2px #000;
+    background: $teal;
+    border-radius: 20px;
+    border-color: #fff;
+  }
+
+  .track-work--started {
+    background: $pink;
+  }
+
+  .button-bar {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+}

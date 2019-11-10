@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { WorkTrackStore } from "../WorkTrackStorage";
 import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
 import DayRecord from "./DayRecord";
+import "../scss/style.scss";
+import { NavigateNext, NavigateBefore } from "@material-ui/icons";
 
 const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
@@ -40,34 +42,42 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
   };
 
   return (
-    <>
+    <div className="records">
       <h2>
-        records of month:{" "}
+        Records of month:{" "}
         {currentReportDate.getFullYear() +
           "-" +
           (currentReportDate.getMonth() + 1)}
       </h2>
-      <button id="month-back" onClick={showPreviousMonth}>
-        &lt; &lt; previous month &lt; &lt;
-      </button>
-      <button id="month-next" onClick={showNextMonth}>
-        >> next month >>
-      </button>
-      <table>
-        <thead>
-          <th>valid</th>
-          <th>day</th>
-          <th>records</th>
-          <th>total</th>
-          <th>zoho time</th>
-        </thead>
-        <tbody>
-          {records.map(rec => (
-            <DayRecord key={rec.date} record={rec} />
-          ))}
-        </tbody>
-      </table>
-    </>
+      <div className="records__navigation-buttons">
+        <button id="month-back" onClick={showPreviousMonth}>
+          <NavigateBefore fontSize="small" className="icon--before" />
+          previous month
+        </button>
+        <button id="month-next" onClick={showNextMonth}>
+          next month
+          <NavigateNext fontSize="small" className="icon--after" />
+        </button>
+      </div>
+      <div className="records__table-wrapper">
+        <table className="records__table">
+          <thead>
+            <tr>
+              <th>valid</th>
+              <th>day</th>
+              <th>records</th>
+              <th>total</th>
+              <th>zoho time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {records.map(rec => (
+              <DayRecord key={rec.date} record={rec} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 

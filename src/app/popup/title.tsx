@@ -21,9 +21,7 @@ const Title: React.FunctionComponent<{}> = ({}) => {
   }, 1000);
 
   return (
-    <>
       <h1>{currentTime.toLocaleString(locale, dateFormatOptions)}</h1>
-    </>
   );
 };
 

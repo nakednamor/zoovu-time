@@ -7,13 +7,31 @@ import { currentTimeRecord, log } from "../util/Utilities";
 import { WorkTrackRecord } from "../WorkTrackRecord";
 import { WorkTrackDayRecord } from "../WorkTrackDayRecord";
 import "../scss/style.scss";
+import {
+  Timer,
+  TimerOff,
+  PlaylistAddCheck,
+  DeleteOutline,
+  Event
+} from "@material-ui/icons/";
+import { addMissingZero } from "../util/Utilities";
 
 const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
   const now = new Date(Date.now());
-
   const [workTrackStarted, setWorkTrackStarted] = useState(false);
   const [records, setRecords] = useState<WorkTrackRecord[]>([]);
+
+  const minutesWorked: number = records
+    .map(record => record.getWorkingTime())
+    .reduce((total: number, currentVal: number) => {
+      return total + currentVal;
+    }, 0);
+
+  const workingTimeString =
+    addMissingZero(Math.floor(minutesWorked / 60)) +
+    ":" +
+    addMissingZero(minutesWorked % 60);
 
   useMemo(() => {
     store.getTodaysRecords(
@@ -86,26 +104,48 @@ const CurrentDayTracker: React.FunctionComponent<{}> = ({}) => {
   return (
     <>
       <Title />
-      <button
-        id="track-work"
-        onClick={handlers.onTrackWorkButtonClick}
-        className={`${workTrackStarted ? "track-work--started" : "track-work--stopped"}`}
-      >
-        {workTrackStarted ? "STOP" : "START"} Work
-      </button>
+      <div className="tracker-bar">
+        <button
+          id="track-work"
+          onClick={handlers.onTrackWorkButtonClick}
+          className={`${
+            workTrackStarted ? "track-work--started" : "track-work--stopped"
+          }`}
+        >
+          {workTrackStarted ? (
+            <TimerOff fontSize="small" className="icon--before" />
+          ) : (
+            <Timer fontSize="small" className="icon--before" />
+          )}
+          {workTrackStarted ? "STOP" : "START"} Work
+        </button>
+        <span>
+           Working time of today: <strong>{workingTimeString}</strong>
+        </span>
+      </div>
+
       <CurrentDayRecords records={records} />
 
       <div className="button-bar">
-        <button id="apply" onClick={handlers.onApplyButtonClick}>
-          apply records
-        </button>
-
         <button id="remove-all" onClick={handlers.removeAllRecords}>
-          REMOVE ALL RECORDS
+          remove all
+          <DeleteOutline
+            fontSize="small"
+            className="icon--after"
+            color="error"
+          />
         </button>
-
         <button id="options-page" onClick={handlers.showOptionsPage}>
-          show monthly records
+          overview
+          <Event fontSize="small" className="icon--after" htmlColor="#3c0078" />
+        </button>
+        <button id="apply" onClick={handlers.onApplyButtonClick}>
+          apply all
+          <PlaylistAddCheck
+            fontSize="small"
+            className="icon--after"
+            htmlColor="green"
+          />
         </button>
       </div>
     </>
