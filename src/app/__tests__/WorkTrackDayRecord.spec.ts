@@ -147,11 +147,11 @@ describe("validMaxWorkingTimeDuration()", () => {
     { expected: false, records: [["08:00", "23:30"]] },
     {
       expected: true,
-      records: [["08:00", "12:00"], ["12:30", "17:00"], ["20:00", "21:29"]]
+      records: [["08:00", "12:00"], ["12:30", "17:00"], ["20:00", "21:30"]]
     },
     {
       expected: false,
-      records: [["08:00", "12:00"], ["12:30", "17:00"], ["20:00", "21:30"]]
+      records: [["08:00", "12:00"], ["12:30", "17:00"], ["20:00", "21:31"]]
     }
   ];
 
@@ -216,8 +216,10 @@ describe("validMinWorkingTimeDuration()", () => {
   const testSetup = [
     { expected: false, records: [] },
     { expected: false, records: [["07:30"]] },
-    { expected: false, records: [["08:00", "12:00"], ["13:00", "16:41"]] },
-    { expected: true, records: [["08:00", "12:00"], ["13:00", "16:42"]] }
+    { expected: false, records: [["09:00", "12:00"], ["13:00", "14:59"]] },
+    { expected: true, records: [["09:00", "12:00"], ["13:00", "15:00"]] },
+    { expected: false, records: [["10:00", "14:59"]] },
+    { expected: true, records: [["10:00", "15:00"]]}
   ];
 
   const testValidMinWorkingTimeDuration = (

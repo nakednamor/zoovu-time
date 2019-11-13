@@ -76,6 +76,13 @@ body.report {
     .day-record__partial {
         display: flex;
         align-items: center;
-        justify-content: center;
+
+        input[type="text"] {
+            flex: 1 1 auto;
+            width: calc(40% - 22px);
+            padding: 3px;
+            font-size: 0.75rem;
+            text-align: center;
+        }
     }
 }
