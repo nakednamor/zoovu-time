@@ -58,11 +58,11 @@ export class WorkTrackDayRecord {
   };
 
   public validMaxWorkingTimeDuration = (): boolean => {
-    return this.getWorkingTime() < 10 * 60;
+    return this.getWorkingTime() <= 10 * 60;
   };
 
   public validMinWorkingTimeDuration = (): boolean => {
-    return this.getWorkingTime() >= 7 * 60 + 42;
+    return this.getWorkingTime() >= 5 * 60;
   };
 
   public validEndTime = (): boolean => {
