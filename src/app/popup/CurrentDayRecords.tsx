@@ -7,15 +7,15 @@ interface Props {
 
 const CurrentDayRecords: React.FunctionComponent<Props> = ({ records }) => {
   return (
-      <div className="current-day-records">
-        {records.map((r, i) => {
-          return (
-            <h3 key={i}>
-              {r.start} - {r.end}
-            </h3>
-          );
-        })}
-      </div>
+    <div className="current-day-records">
+      {records.map((r, i) => {
+        return (
+          <h3 key={i}>
+            {r.start} - {r.end}
+          </h3>
+        );
+      })}
+    </div>
   );
 };
 

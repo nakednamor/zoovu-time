@@ -9,7 +9,7 @@ body.popup {
     position: relative;
 
     &::after {
-      content: '';
+      content: "";
       display: block;
       position: sticky;
       z-index: 1;
@@ -18,10 +18,14 @@ body.popup {
       // clicks/touches will go through them
       pointer-events: none;
     }
-  
+
     &::after {
       bottom: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.1) 10%, transparent 61%)
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.1) 10%,
+        transparent 61%
+      );
     }
 
     h3 {

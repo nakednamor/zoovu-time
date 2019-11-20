@@ -20,9 +20,7 @@ const Title: React.FunctionComponent<{}> = ({}) => {
     setCurrentTime(new Date(Date.now()));
   }, 1000);
 
-  return (
-      <h1>{currentTime.toLocaleString(locale, dateFormatOptions)}</h1>
-  );
+  return <h1>{currentTime.toLocaleString(locale, dateFormatOptions)}</h1>;
 };
 
 export default Title;
