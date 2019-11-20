@@ -41,13 +41,16 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
     setCurrentReportDate(currentReportDate);
   };
 
+  const locale = navigator.language;
+
   return (
     <div className="records">
       <h2>
-        Records of month:{" "}
-        {currentReportDate.getFullYear() +
-          "-" +
-          (currentReportDate.getMonth() + 1)}
+        Records of{" "}
+        {currentReportDate.toLocaleString(locale, {
+          year: "numeric",
+          month: "long"
+        })}
       </h2>
       <div className="records__navigation-buttons">
         <button id="month-back" onClick={showPreviousMonth}>
