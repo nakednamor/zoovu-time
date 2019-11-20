@@ -6,6 +6,11 @@ import DayRecord from "./DayRecord";
 import "../scss/style.scss";
 import { NavigateNext, NavigateBefore } from "@material-ui/icons";
 
+const formatOptions = {
+  weekday: "short",
+  day: "2-digit"
+};
+
 const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
   const store = new WorkTrackStore(chrome.storage.local, chrome.runtime);
 
@@ -75,7 +80,12 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
           </thead>
           <tbody>
             {records.map(rec => (
-              <DayRecord key={rec.date} record={rec} />
+              <DayRecord
+                key={rec.date}
+                record={rec}
+                locale={locale}
+                formatOptions={formatOptions}
+              />
             ))}
           </tbody>
         </table>

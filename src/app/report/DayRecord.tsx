@@ -4,9 +4,15 @@ import { ArrowRightAlt, CheckCircle, Error } from "@material-ui/icons";
 
 interface Props {
   record: WorkTrackDayRecord;
+  locale: string;
+  formatOptions: object;
 }
 
-const DayRecord: React.FunctionComponent<Props> = ({ record }) => {
+const DayRecord: React.FunctionComponent<Props> = ({
+  record,
+  locale,
+  formatOptions
+}) => {
   return (
     <tr className="day-record">
       <td>
@@ -16,7 +22,7 @@ const DayRecord: React.FunctionComponent<Props> = ({ record }) => {
           <Error color="error" />
         )}
       </td>
-      <td>{record.date}</td>
+      <td>{record.dateObject.toLocaleString(locale, formatOptions)}</td>
       <td>
         {record.records.map((r, i) => {
           return (
