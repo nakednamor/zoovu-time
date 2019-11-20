@@ -214,20 +214,31 @@ describe("validEndTime()", () => {
 
 describe("validMinWorkingTimeDuration()", () => {
   const testSetup = [
-    { expected: false, records: [] },
-    { expected: false, records: [["07:30"]] },
-    { expected: false, records: [["09:00", "12:00"], ["13:00", "14:59"]] },
-    { expected: true, records: [["09:00", "12:00"], ["13:00", "15:00"]] },
-    { expected: false, records: [["10:00", "14:59"]] },
-    { expected: true, records: [["10:00", "15:00"]]}
+    { expected: false, records: [], weekend: false },
+    { expected: true, records: [], weekend: true },
+    { expected: false, records: [["07:30"]], weekend: false },
+    {
+      expected: false,
+      records: [["09:00", "12:00"], ["13:00", "14:59"]],
+      weekend: false
+    },
+    {
+      expected: true,
+      records: [["09:00", "12:00"], ["13:00", "15:00"]],
+      weekend: false
+    },
+    { expected: false, records: [["10:00", "14:59"]], weekend: false },
+    { expected: true, records: [["10:00", "15:00"]], weekend: false }
   ];
 
   const testValidMinWorkingTimeDuration = (
     expected: boolean,
-    records: string[][]
+    records: string[][],
+    weekend: boolean
   ): void => {
     // given
-    const record = new WorkTrackDayRecord("1985_04_16", []);
+    const dateString = weekend ? "2019_11_17" : "2011_11_18";
+    const record = new WorkTrackDayRecord(dateString, []);
     records.forEach(arr => {
       const rec = new WorkTrackRecord(arr[0], arr[1]);
       record.records.push(rec);
@@ -241,8 +252,14 @@ describe("validMinWorkingTimeDuration()", () => {
   };
 
   testSetup.forEach(setup => {
-    test(`should return: ${setup.expected}`, () => {
-      testValidMinWorkingTimeDuration(setup.expected, setup.records);
+    test(`should return: ${setup.expected} for ${
+      setup.weekend ? "weekend" : "working day"
+    }`, () => {
+      testValidMinWorkingTimeDuration(
+        setup.expected,
+        setup.records,
+        setup.weekend
+      );
     });
   });
 });

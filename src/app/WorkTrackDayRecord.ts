@@ -3,6 +3,7 @@ import { addMissingZero } from "./util/Utilities";
 
 export class WorkTrackDayRecord {
   private readonly _date: string;
+  private _dateObject: Date | null = null;
   private readonly _records: WorkTrackRecord[];
 
   constructor(date: string, records?: WorkTrackRecord[]) {
@@ -12,6 +13,20 @@ export class WorkTrackDayRecord {
 
   get date(): string {
     return this._date;
+  }
+
+  get dateObject(): Date {
+    if (this._dateObject !== null) {
+      return this._dateObject;
+    }
+
+    const dateArray = this._date.split("_");
+    this._dateObject = new Date(
+      +dateArray[0],
+      +dateArray[1] - 1,
+      +dateArray[2]
+    );
+    return this._dateObject;
   }
 
   get records(): WorkTrackRecord[] {
@@ -62,7 +77,11 @@ export class WorkTrackDayRecord {
   };
 
   public validMinWorkingTimeDuration = (): boolean => {
-    return this.getWorkingTime() >= 5 * 60;
+    return this.isWeekend() || this.getWorkingTime() >= 5 * 60;
+  };
+
+  public isWeekend = (): boolean => {
+    return this.dateObject.getDay() === 0 || this.dateObject.getDay() === 6;
   };
 
   public validEndTime = (): boolean => {
