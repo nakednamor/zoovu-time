@@ -11,9 +11,6 @@ const getSelectedMonth = (): Date => {
   return new Date(Date.parse(input.value));
 };
 
-// tslint:disable-next-line:no-console
-console.log("hier");
-
 const getRecord = (
   tableDate: string,
   records: WorkTrackDayRecord[]
@@ -24,14 +21,7 @@ const getRecord = (
     const arr = dateString.split("_");
     return arr[2];
   };
-  // tslint:disable-next-line:no-console
-  console.debug(records[0]);
-  const a: WorkTrackDayRecord = records[0];
-  const b: string = a.date;
-  // tslint:disable-next-line:no-console
-  console.debug(a);
-  // tslint:disable-next-line:no-console
-  console.log(b);
+
   return records.filter(rec => tableDateDay === parseDay(rec.date))[0];
 };
 
