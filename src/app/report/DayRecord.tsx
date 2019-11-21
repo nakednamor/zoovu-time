@@ -6,12 +6,14 @@ interface Props {
   record: WorkTrackDayRecord;
   locale: string;
   formatOptions: object;
+  removeRecord: (dateString: string, recordIndex: number) => void;
 }
 
 const DayRecord: React.FunctionComponent<Props> = ({
   record,
   locale,
-  formatOptions
+  formatOptions,
+  removeRecord
 }) => {
   return (
     <tr className="day-record">
@@ -40,6 +42,12 @@ const DayRecord: React.FunctionComponent<Props> = ({
                 maxLength={5}
                 minLength={5}
               />
+              <button
+                value={record.date + "-" + i}
+                onClick={() => removeRecord(record.date, i)}
+              >
+                remove record
+              </button>
             </div>
           );
         })}

@@ -4,7 +4,7 @@ import { addMissingZero } from "./util/Utilities";
 export class WorkTrackDayRecord {
   private readonly _date: string;
   private _dateObject: Date | null = null;
-  private readonly _records: WorkTrackRecord[];
+  private _records: WorkTrackRecord[];
 
   constructor(date: string, records?: WorkTrackRecord[]) {
     this._date = date;
@@ -95,6 +95,10 @@ export class WorkTrackDayRecord {
       this.validMaxWorkingTimeDuration() &&
       this.validEndTime()
     );
+  };
+
+  public removeRecord = (index: number) => {
+    this._records.splice(index, 1);
   };
 
   private _getEndOfLastRecord = (): string | null => {

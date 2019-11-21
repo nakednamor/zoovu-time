@@ -20,6 +20,7 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
   };
 
   const [records, setRecords] = useState<WorkTrackDayRecord[]>([]);
+  const [recordsChanges, setRecordsChanges] = useState<number>(0);
   const [currentReportDate, setCurrentReportDate] = useState<Date>(
     getDateWithFirstDayOfCurrentMonth()
   );
@@ -44,6 +45,18 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
   const showNextMonth = () => {
     currentReportDate.setMonth(currentReportDate.getMonth() + 1);
     setCurrentReportDate(currentReportDate);
+  };
+
+  const removeRecord = (dateString: string, recordIndex: number) => {
+    const record: WorkTrackDayRecord | undefined = records.find(
+      rec => rec.date === dateString
+    );
+
+    if (record) {
+      record.removeRecord(recordIndex);
+      setRecords(records);
+      setRecordsChanges(recordsChanges + 1);
+    }
   };
 
   const locale = navigator.language;
@@ -85,6 +98,7 @@ const MonthlyOverview: React.FunctionComponent<{}> = ({}) => {
                 record={rec}
                 locale={locale}
                 formatOptions={formatOptions}
+                removeRecord={removeRecord}
               />
             ))}
           </tbody>
